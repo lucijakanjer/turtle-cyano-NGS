@@ -51,4 +51,5 @@ table(tax_table(cyano_v34)[,4])
 # We can ask what proportion of assignments we have made at each level
 apply(tax_table(cyano_v34)[,2:7],2,function(x){1-mean(is.na(x))})
 
-
+# Removing non-turtle samples
+cyano_v34_turtle <- subset_samples(cyano_v34, SampleType=="carapace")
