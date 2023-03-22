@@ -17,6 +17,7 @@ library(RColorBrewer) #pretty colour pallettes
 library(gplots)   #venn diagrams
 library(cowplot) #saving graphs
 library(pheatmap) #alternative heatmaps
+library(patchwork)
 
 #Data Manipulation
 library(tidyverse)
@@ -28,56 +29,56 @@ library(MuMIn)
 library(car)
 
 ### Build Phyloseq Object 
-cyano <- qza_to_phyloseq(
+cyano_v6 <- qza_to_phyloseq(
   "table-V6-cyanobacteria.qza",
   "rooted-tree-V6-cyanobacteria.qza",
   "taxonomy-V6-cyanobacteria.qza",
   "metadata-V6-v1.tsv") #sample metadata must be in TSV format
-cyano
+cyano_v6
 
 # Building phyloseq object without the phylogenetic tree
-cyano_no_tree <- qza_to_phyloseq(
+cyano_v6_no_tree <- qza_to_phyloseq(
   features = "table-V6-cyanobacteria.qza",
   taxonomy = "taxonomy-V6-cyanobacteria.qza", 
   metadata = "metadata-V6-v1.tsv")
-cyano_no_tree
+cyano_v6_no_tree
 
 # top 20 records from taxonomy table
-head(tax_table(cyano),20)
+head(tax_table(cyano_v6),20)
 
 # check how many ASVs are found in different taxa on specific level
-table(tax_table(cyano)[,4])
+table(tax_table(cyano_v6)[,4])
 
 # We can ask what proportion of assignments we have made at each level
-apply(tax_table(cyano)[,2:7],2,function(x){1-mean(is.na(x))})
+apply(tax_table(cyano_v6)[,2:7],2,function(x){1-mean(is.na(x))})
 
 
 # Filtering based on number of reads
 
-cyano50 <-prune_taxa(taxa_sums(cyano)>50,cyano)
-ntaxa(cyano50); ntaxa(cyano)
-ntaxa(cyano)- ntaxa(cyano50)
+cyano_v6_50 <-prune_taxa(taxa_sums(cyano)>50,cyano)
+ntaxa(cyano_v6_50); ntaxa(cyano)
+ntaxa(cyano_v6)- ntaxa(cyano_v6_50)
 
 # Quality assesment
 
-mean(sample_sums(cyano50)); range(sample_sums(cyano50))
+mean(sample_sums(cyano_v6_50)); range(sample_sums(cyano_v6_50))
 
 #Make a data frame of read depths
-cyano_reads <- data.frame(reads=sample_sums(cyano50))
+cyano_v6_reads <- data.frame(reads=sample_sums(cyano_v6_50))
 
 #Add on the sample ID
-cyano_reads$Sample<-rownames(cyano_reads)
+cyano_v6_reads$Sample<-rownames(cyano_v6_reads)
 
 #Extract the Metadata from the phyloseq object 
-cyano_meta<-data.frame(sample_data(cyano))
-cyano_meta$Sample<-rownames(cyano_meta)
+cyano_v6_meta<-data.frame(sample_data(cyano_v6))
+cyano_v6_meta$Sample<-rownames(cyano_v6_meta)
 
 #Join on the Metadata
-cyano_reads<-left_join(cyano_reads,cyano_meta,"Sample")
+cyano_v6_reads<-left_join(cyano_v6_reads,cyano_v6_meta,"Sample")
 
 #Some Boxplots of Coverage by Population using ggplot2
 #library(ggplot2)
-ggplot(cyano_reads,aes(x=Age,y=reads)) + 
+ggplot(cyano_v6_reads,aes(x=Age,y=reads)) + 
   geom_boxplot(aes(fill=Age)) + 
   geom_jitter()
   #plotopts + 
@@ -85,7 +86,7 @@ ggplot(cyano_reads,aes(x=Age,y=reads)) +
 
 
 # rarefaction curve
-rarecurve(t(otu_table(cyano50)), step=50, cex=0.5) 
+rarecurve(t(otu_table(cyano_v6)), step=50, cex=0.5) 
 # ne radi, javlja gresku: Error in as(x, "matrix")[i, j, drop = FALSE] : 
 # (subscript) logical subscript too long
 
@@ -94,7 +95,7 @@ names(sample_sums(cyano50))[which(sample_sums(cyano50)<10000)]
 length(sample_sums(cyano50))[which(sample_sums(cyano50)<10000)]
 
 # Rarefiying
-cyano50_rare <- rarefy_even_depth(cyano50,10000,rngseed = 777)
+cyano_v6_rare <- rarefy_even_depth(cyano_v6,10000,rngseed = 777)
 # set.seed(777)` was used to initialize repeatable random subsampling.
 # Please record this for your records so others can reproduce.
 # Try `set.seed(777); .Random.seed` for the full vector
@@ -104,11 +105,11 @@ cyano50_rare <- rarefy_even_depth(cyano50,10000,rngseed = 777)
 #  
 #   V6-negctrlV6-TB163V6-TB167V6-TB207V6-TB213
 # ...
-# 8OTUs were removed because they are no longer 
+# 66TUs were removed because they are no longer 
 # present in any sample after random subsampling
 
-cyano50_rare_turtles <- prune_samples(sample_data(cyano50_rare)$SampleType =="carapace",cyano50_rare)
-cyano50_rare_turtles
+cyano_v6_rare_turtle <- prune_samples(sample_data(cyano_v6_rare)$SampleType =="carapace",cyano_v6_rare)
+cyano5_v6_rare_turtle
 
 ###################   SHARED AND UNIQUE SEQUENCES BY SITE
 #library(gplots) #required for Venn diagram. Online Venn diagram tools like Venny are also available. 
@@ -116,7 +117,7 @@ cyano50_rare_turtles
 #Empty lists - we have two groups so we need two empty lists
 venn.list<-rep(list(NA),4)
 poplist<-rep(list(NA),4)
-pops<-as.character(unique(sample_data(cyano50_rare)$Age))
+pops<-as.character(unique(sample_data(cyano_v6_rare)$Age))
 
 #Populate List with the Names of Groups we Want to Compare
 poplist[[1]]<-pops[1]
@@ -132,7 +133,7 @@ names(venn.list)<-pops
 for(k in 1:4){
   
   #Subset Phyloseq Object to One Pop at a time  
-  phy.sub<-prune_samples(sample_data(cyano50_rare)$Age %in% poplist[[k]],cyano50_rare)
+  phy.sub<-prune_samples(sample_data(cyano_v6_rare)$Age %in% poplist[[k]],cyano_v6_rare)
   
   #Calculate which ASVs are present (non-zero abundance)  
   phy.sub.keep<-apply(otu_table(phy.sub),1,function(x){sum(x)>0})
@@ -150,80 +151,94 @@ venn(venn.list)
 
 #Alpha diversity
 
-alpha_diversity <- estimate_richness(cyano50_rare,measures=c("Observed","Shannon","InvSimpson"))
-head(alpha_diversity)
+alpha_diversity_v6 <- estimate_richness(cyano_v6_rare_turtle,measures=c("Observed","Shannon","InvSimpson"))
+head(alpha_diversity_v6)
 
-plot_richness(cyano50_rare,x="CCL",measures=c("Observed"))
+plot_richness(cyano_v6_rare,x="CCL",measures=c("Observed"))
 
-alpha_invsimpson_CCL <- plot_richness(cyano50_rare, x = "CCL", measures = c("InvSimpson")) + 
+alpha_v6_invsimpson_CCL <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("InvSimpson")) + 
   geom_point(aes(color = CCL), size = 5) + 
   scale_color_continuous(type = "viridis") +
   theme_bw() + 
   labs(x = "CCL (cm)",y = "Inversed Simpson index") + 
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
-alpha_invsimpson_CCL
+alpha_v6_invsimpson_CCL
 
-alpha_shannon_CCL <- plot_richness(cyano50_rare, x = "CCL", measures = c("Shannon")) + 
+alpha_v6_shannon_CCL <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Shannon")) + 
   geom_point(aes(color = CCL), size = 3) + 
   scale_color_continuous(type = "viridis", name = "CCL (cm)") +
   theme_bw() + 
   labs(x = "Turtle curved carapace length - CCL (cm)",y = "Shannon diversity index") + 
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
-alpha_shannon_CCL
+alpha_v6_shannon_CCL
 
 
 
-alpha_observed_CCL <- plot_richness(cyano50_rare, x = "CCL", measures = c("Observed")) + 
+alpha_v6_observed_CCL <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Observed")) + 
   geom_point(aes(color = CCL), size = 3) + 
   scale_color_continuous(type = "viridis") +
   theme_bw() + 
   theme(legend.position = "none") +
   labs(x = "Turtle curved carapace length - CCL (cm)",y = "Observed ASV richness") + 
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
-alpha_observed_CCL
+alpha_v6_observed_CCL
 
-install.packages("patchwork")
-library(patchwork)
 
-alpha_observed_CCL + alpha_shannon_CCL
-ggsave(filename = "alpha_obsv_shannon_CCL.pdf", width = 6.75, height = 4, device = cairo_pdf)
-ggsave(filename = "alpha_obsv_shannon_CCL_horizontal.jpg", width = 6.75, height = 4, dpi = 300)
 
-alpha_observed_age <- plot_richness(cyano50_rare, x = "CCL", measures = c("Observed")) + 
+
+alpha_v6_observed_CCL + alpha_v6_shannon_CCL
+ggsave(filename = "figures/alpha_v6_obsv_shannon_CCL.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/alpha_v6_obsv_shannon_CCL_horizontal.jpg", width = 6.75, height = 4, dpi = 300)
+
+alpha_v6_observed_age <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Observed")) + 
   geom_point(aes(colour = Age), size = 3) + 
   scale_color_brewer(palette = "Set2", name ="Age") +
   theme_bw() + 
   theme(legend.position = "none") +
   labs(x = "CCL (cm)",y = "Observed ASV richness") + 
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
-alpha_observed_age
+alpha_v6_observed_age
 
-alpha_shannon_age <- plot_richness(cyano50_rare, x = "CCL", measures = c("Shannon")) + 
-  geom_point(aes(colour = Age), size = 3) + 
-  scale_color_brewer(palette = "Set2", name ="Age") +
+alpha_v6_shannon_age <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Shannon")) + 
+  geom_point(aes(colour = Age, shape = Age), size = 3) + 
+  scale_shape_discrete(name  ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
+  scale_color_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
   theme_bw() + 
-  labs(x = "CCL (cm)",y = "Shannon diversity index") + 
+  labs(x = "CCL (cm)",y = "Shannon diversity index",color = "Age", shape = "Age") +
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
-alpha_shannon_age
+alpha_v6_shannon_age
 
-alpha_observed_age + alpha_shannon_age
-ggsave(filename = "alpha_obsv_shannon_age.pdf", width = 6.75, height = 4, device = cairo_pdf)
-ggsave(filename = "alpha_obsv_shannon_age.jpg", width = 6.75, height = 4, dpi = 300)
+alpha_v6_observed_age + alpha_v6_shannon_age
+ggsave(filename = "figures/alpha_v6_obsv_shannon_age.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/alpha_v6_obsv_shannon_age.jpg", width = 6.75, height = 4, dpi = 300)
 
 
-#alpha_diversity$Sample<-rownames(alpha_diversity)
-#alpha_diversity<-left_join(alpha_diversity,cyano_meta,"Sample")
+# preparation of data for Pearson correlation test
+cyano_v6_rare_turtle_meta<-data.frame(sample_data(cyano_v6_rare_turtle))
+alpha_diversity_v6$Sample<-rownames(cyano_v6_rare_turtle_meta) #making column "Sample"
+cyano_v6_rare_turtle_meta$Sample<-rownames(cyano_v6_rare_turtle_meta) #making column "Sample"
+alpha_diversity_v6 <-left_join(alpha_diversity_v6,cyano_v6_rare_turtle_meta, by="Sample")
 
-#Plot the correlation between heterozygosity and richness (shannon diversity)
-#ggplot(alpha_diversity,aes(x=CCL,y=Shannon)) + 
-#  geom_point(size=5,fill="white") + 
-#  theme_bw() + 
-#  labs(x="CCL(cm)", y="Alpha Diversity (Shannon)") + 
-#  theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
+# Pearson correlation test
+with(alpha_diversity_v6,cor.test(CCL,Shannon))
+# data:  CCL and Shannon
+# t = 4.0231, df = 17, p-value = 0.0008819
+# alternative hypothesis: true correlation is not equal to 0
+# 95 percent confidence interval:
+#  0.3575996 0.8750205
+# sample estimates:
+#  cor 
+# 0.6983752 
 
-# Pearson test for correlation - but do not work because I can't join tables because 
-# of different names in "alpha_diversity" and "cyano_meta"
-with(alpha_diversity,cor.test(CCL,Shannon))
+with(alpha_diversity_v6,cor.test(CCL,Observed))
+# data:  CCL and Observed
+# t = 2.0791, df = 17, p-value = 0.05306
+# alternative hypothesis: true correlation is not equal to 0
+# 95 percent confidence interval:
+#  -0.004984767  0.750892055
+# sample estimates:
+#  cor 
+# 0.4502439
 
 # NMDS
 ord_nmds_bray <- ordinate(cyano50_rare_turtles, method="NMDS",k=3, distance="bray",trymax=50)
