@@ -182,7 +182,7 @@ alpha_observed_CCL <- plot_richness(cyano50_rare, x = "CCL", measures = c("Obser
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
 alpha_observed_CCL
 
-install.packages("patchwork")
+#install.packages("patchwork")
 library(patchwork)
 
 alpha_observed_CCL + alpha_shannon_CCL
