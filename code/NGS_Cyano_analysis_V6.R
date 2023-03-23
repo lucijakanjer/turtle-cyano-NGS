@@ -183,6 +183,8 @@ alpha_v6_observed_CCL <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
 alpha_v6_observed_CCL
 
+#install.packages("patchwork")
+library(patchwork)
 
 
 
