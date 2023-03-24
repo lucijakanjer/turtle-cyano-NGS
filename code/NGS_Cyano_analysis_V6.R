@@ -30,17 +30,17 @@ library(car)
 
 ### Build Phyloseq Object 
 cyano_v6 <- qza_to_phyloseq(
-  "table-V6-cyanobacteria.qza",
-  "rooted-tree-V6-cyanobacteria.qza",
-  "taxonomy-V6-cyanobacteria.qza",
-  "metadata-V6-v1.tsv") #sample metadata must be in TSV format
+  "data/table-V6-cyanobacteria.qza",
+  "data/rooted-tree-V6-cyanobacteria.qza",
+  "data/taxonomy-V6-cyanobacteria.qza",
+  "data/metadata-V6-v1.tsv") #sample metadata must be in TSV format
 cyano_v6
 
 # Building phyloseq object without the phylogenetic tree
 cyano_v6_no_tree <- qza_to_phyloseq(
-  features = "table-V6-cyanobacteria.qza",
-  taxonomy = "taxonomy-V6-cyanobacteria.qza", 
-  metadata = "metadata-V6-v1.tsv")
+  features = "data/table-V6-cyanobacteria.qza",
+  taxonomy = "data/taxonomy-V6-cyanobacteria.qza", 
+  metadata = "data/metadata-V6-v1.tsv")
 cyano_v6_no_tree
 
 # top 20 records from taxonomy table
@@ -55,8 +55,8 @@ apply(tax_table(cyano_v6)[,2:7],2,function(x){1-mean(is.na(x))})
 
 # Filtering based on number of reads
 
-cyano_v6_50 <-prune_taxa(taxa_sums(cyano)>50,cyano)
-ntaxa(cyano_v6_50); ntaxa(cyano)
+cyano_v6_50 <- prune_taxa(taxa_sums(cyano_v6)>50,cyano_v6)
+ntaxa(cyano_v6_50); ntaxa(cyano_v6)
 ntaxa(cyano_v6)- ntaxa(cyano_v6_50)
 
 # Quality assesment
@@ -80,19 +80,15 @@ cyano_v6_reads<-left_join(cyano_v6_reads,cyano_v6_meta,"Sample")
 #library(ggplot2)
 ggplot(cyano_v6_reads,aes(x=Age,y=reads)) + 
   geom_boxplot(aes(fill=Age)) + 
-  geom_jitter()
-  #plotopts + 
+  geom_jitter()+
   theme(axis.text.x = element_text(angle = 45, hjust=1))
 
 
 # rarefaction curve
 rarecurve(t(otu_table(cyano_v6)), step=50, cex=0.5) 
-# ne radi, javlja gresku: Error in as(x, "matrix")[i, j, drop = FALSE] : 
-# (subscript) logical subscript too long
-
-min(sample_sums(cyano50))
-names(sample_sums(cyano50))[which(sample_sums(cyano50)<10000)]
-length(sample_sums(cyano50))[which(sample_sums(cyano50)<10000)]
+min(sample_sums(cyano_v6))
+names(sample_sums(cyano_v6))[which(sample_sums(cyano_v6)<10000)]
+length(sample_sums(cyano_v6))[which(sample_sums(cyano_v6)<10000)]
 
 # Rarefiying
 cyano_v6_rare <- rarefy_even_depth(cyano_v6,10000,rngseed = 777)
@@ -108,32 +104,35 @@ cyano_v6_rare <- rarefy_even_depth(cyano_v6,10000,rngseed = 777)
 # 66TUs were removed because they are no longer 
 # present in any sample after random subsampling
 
-cyano_v6_rare_turtle <- prune_samples(sample_data(cyano_v6_rare)$SampleType =="carapace",cyano_v6_rare)
-cyano5_v6_rare_turtle
+cyano_v6_turtle <- prune_samples(sample_data(cyano_v6)$SampleType =="carapace",cyano_v6)
+cyano_v6_turtle
 
-###################   SHARED AND UNIQUE SEQUENCES BY SITE
+cyano_v6_rare_turtle <- prune_samples(sample_data(cyano_v6_rare)$SampleType =="carapace",cyano_v6_rare)
+cyano_v6_rare_turtle
+
+###################   SHARED AND UNIQUE SEQUENCES BY AGE
 #library(gplots) #required for Venn diagram. Online Venn diagram tools like Venny are also available. 
 
 #Empty lists - we have two groups so we need two empty lists
-venn.list<-rep(list(NA),4)
-poplist<-rep(list(NA),4)
-pops<-as.character(unique(sample_data(cyano_v6_rare)$Age))
+venn.list<-rep(list(NA),3)
+poplist<-rep(list(NA),3)
+pops<-as.character(unique(sample_data(cyano_v6_turtle)$Age))
 
 #Populate List with the Names of Groups we Want to Compare
 poplist[[1]]<-pops[1]
 poplist[[2]]<-pops[2]
 poplist[[3]]<-pops[3]
-poplist[[4]]<-pops[4]
+
 
 
 #Name the Groups in the Vennlist
 names(venn.list)<-pops
 
 #Loop over each population, subset the phyloseq object to just that population and work out which SVs are in that population, store those names in the lisr
-for(k in 1:4){
+for(k in 1:3){
   
   #Subset Phyloseq Object to One Pop at a time  
-  phy.sub<-prune_samples(sample_data(cyano_v6_rare)$Age %in% poplist[[k]],cyano_v6_rare)
+  phy.sub<-prune_samples(sample_data(cyano_v6_rare)$Age %in% poplist[[k]],cyano_v6_turtle)
   
   #Calculate which ASVs are present (non-zero abundance)  
   phy.sub.keep<-apply(otu_table(phy.sub),1,function(x){sum(x)>0})
@@ -183,14 +182,10 @@ alpha_v6_observed_CCL <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
 alpha_v6_observed_CCL
 
-#install.packages("patchwork")
-library(patchwork)
-
-
 
 alpha_v6_observed_CCL + alpha_v6_shannon_CCL
 ggsave(filename = "figures/alpha_v6_obsv_shannon_CCL.pdf", width = 6.75, height = 4, device = cairo_pdf)
-ggsave(filename = "figures/alpha_v6_obsv_shannon_CCL_horizontal.jpg", width = 6.75, height = 4, dpi = 300)
+ggsave(filename = "figures/alpha_v6_obsv_shannon_CCL.jpg", width = 6.75, height = 4, dpi = 300)
 
 alpha_v6_observed_age <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Observed")) + 
   geom_point(aes(colour = Age), size = 3) + 
@@ -213,6 +208,7 @@ alpha_v6_shannon_age
 alpha_v6_observed_age + alpha_v6_shannon_age
 ggsave(filename = "figures/alpha_v6_obsv_shannon_age.pdf", width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/alpha_v6_obsv_shannon_age.jpg", width = 6.75, height = 4, dpi = 300)
+
 
 
 # preparation of data for Pearson correlation test
@@ -243,60 +239,84 @@ with(alpha_diversity_v6,cor.test(CCL,Observed))
 # 0.4502439
 
 # NMDS
-ord_nmds_bray <- ordinate(cyano50_rare_turtles, method="NMDS",k=3, distance="bray",trymax=50)
-plot_ordination(cyano50_rare_turtles, ord_nmds_bray, color="Age", title="Bray NMDS") + 
-  stat_ellipse(geom="polygon",aes(fill=Age),type="norm",alpha=0.3) + 
+ord_nmds_bray_v6 <- ordinate(cyano_v6_rare_turtle, method="NMDS",k=3, distance="bray",trymax=50)
+nmds_bray_v6 <- plot_ordination(cyano_v6_rare_turtle, ord_nmds_bray_v6, color="Age", shape ="Age", title="Bray-Curtis NMDS V6") +
+  geom_point(aes(colour = Age, shape = Age), size = 2) +
+  scale_shape_discrete(name  ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
+  scale_color_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
+  stat_ellipse(geom="polygon",type="norm",aes(colour=Age, fill=Age), alpha=0.2) + 
+  scale_fill_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
   theme_bw()
+nmds_bray_v6
+
+ggsave(filename = "figures/nmds_v6_bray_age.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/nmds_v6_bray_age.jpg", width = 6.75, height = 4, dpi = 300)
+
+# Combined plot of alpha and beta diversity
+(alpha_v6_observed_age + alpha_v6_shannon_age) / nmds_bray_v6
+ggsave(filename = "figures/alpha_nmds_v6.pdf", width = 6.75, height = 8, device = cairo_pdf)
+ggsave(filename = "figures/alpha_nmds_v6.jpg", width = 6.75, height = 8, dpi = 300)
 
 # Heatmaps
 
-cyano50_rare_top20 <- prune_taxa(names(sort(taxa_sums(cyano50_rare_turtles),TRUE)[1:20]), cyano50_rare_turtles)
-plot_heatmap(cyano50_rare_top20,"NMDS",distance = "bray")
+cyano_v6_turtle_top20 <- prune_taxa(names(sort(taxa_sums(cyano_v6_turtle),TRUE)[1:20]), cyano_v6_turtle)
+plot_heatmap(cyano_v6_turtle_top20,"NMDS",distance = "bray")
 
-plot_heatmap(cyano50_rare_top20,"NMDS",
+ggsave(filename = "figures/heatmap_v6_asv.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/heatmap_v6_asv.jpg", width = 6.75, height = 4, dpi = 300)
+
+plot_heatmap(cyano_v6_turtle_top20,"NMDS",
              distance = "bray",
-             sample.label="CCL",
+             sample.label="Age",
              sample.order = "CCL",
              taxa.label = "Genus")
 
+ggsave(filename = "figures/heatmap_v6_genera.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/heatmap_v6_genera.jpg", width = 6.75, height = 4, dpi = 300)
+
 #Pheatmap package - Generate Metadata for Plotting Colours
-age_data<-data.frame(Age=sample_data(cyano50_rare_top20)$Age)
-rownames(age_data)<-rownames(sample_data(cyano50_rare_top20))
-
-
+age_data<-data.frame(Age=sample_data(cyano_v6_turtle_top20)$Age)
+rownames(age_data)<-rownames(sample_data(cyano_v6_turtle_top20))
 #Plot Heatmap 
-pheatmap(otu_table(cyano50_rare_top20),
+pheatmap(otu_table(cyano_v6_turtle_top20),
          cluster_cols = FALSE,
          cluster_rows = FALSE,
          scale="row",
          annotation_col = age_data)
 
 # Taxa bar plots
-cyano_order <- cyano50_rare_turtles %>%
+cyano_order_v6 <- cyano_v6_turtle %>%
   aggregate_taxa(level = "Order") %>%  
   microbiome::transform(transform = "compositional")
 
-plot_composition(cyano_order)
+plot_composition(cyano_order_v6)
 
-cyano_order %>%
+cyano_order_v6 %>%
   plot_composition(average_by = "Age")+ scale_fill_brewer(palette="Set3")
+
+ggsave(filename = "figures/taxa_bar_plot_v6_order.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_plot_v6_order.jpg", width = 6.75, height = 4, dpi = 300)
 
 #### Run Again But With Top 'N' Phyla 
 
 #What Are the Names of the most abundant phyla?  
-cyano_genus_collapse<- cyano50_rare_turtles %>% aggregate_taxa(level="Genus")
-cyano_top10genera = names(sort(taxa_sums(cyano_genus_collapse), TRUE)[1:10])
+cyano_v6_genus_collapse<- cyano_v6_turtle %>% aggregate_taxa(level="Genus")
+cyano_v6_top10genera = names(sort(taxa_sums(cyano_v6_genus_collapse), TRUE)[1:10])
 
 #Subset the phyloseq object to those phyla   
-cyano_top10genera_filter<-subset_taxa(cyano50_rare_turtles,Genus %in% cyano_top10genera)
+cyano_v6_top10genera_filter<-subset_taxa(cyano_v6_turtle,Genus %in% cyano_v6_top10genera)
 
-#Remake Our Graph  but with grouping by VEGETATION
+#Remake Our Graph  but with grouping by CCL
 
-cyano_top10genera_plot <- cyano_top10genera_filter %>%
+cyano_v6_top10genera_plot <- cyano_v6_top10genera_filter %>%
   aggregate_taxa(level = "Genus") %>%  
   microbiome::transform(transform = "compositional") %>%
   plot_composition(sample.sort = "CCL")
-cyano_top10genera_plot + scale_fill_brewer(palette="Set3")
+cyano_v6_top10genera_plot + scale_fill_brewer(palette="Set3")
+
+ggsave(filename = "figures/taxa_bar_plot_v6_genera.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_plot_v6_genera.jpg", width = 6.75, height = 4, dpi = 300)
+
 
 
 #################### ORDINATION  USING VEGAN   
@@ -319,7 +339,7 @@ vegan_otu <- function(cyano) {
 cyano.v<-vegan_otu(cyano50_rare)
 cyano_turtles.v<-vegan_otu(cyano50_rare_turtles)
 
-#Convert Sample Data to     
+#Convert Sample Data to data frame   
 cyano_turtles.s<-as(sample_data(cyano50_rare_turtles),"data.frame")
 
 ###### NMDS Ordination

@@ -30,17 +30,17 @@ library(car)
 
 ### Build Phyloseq Object --> Cyanobacteria without chloroplast
 cyano_v34 <- qza_to_phyloseq(
-  "table-V34-cyanobacteria.qza",
-  "rooted-tree-V34-cyanobacteria.qza",
-  "taxonomy-V34-cyanobacteria.qza",
-  "metadata-v1.tsv") # sample metadata must be in TSV format
+  "data/table-V34-cyanobacteria.qza",
+  "data/rooted-tree-V34-cyanobacteria.qza",
+  "data/taxonomy-V34-cyanobacteria.qza",
+  "data/metadata-v1.tsv") # sample metadata must be in TSV format
 cyano_v34
 
 # Building phyloseq object without the phylogenetic tree
 cyano_v34_no_tree <- qza_to_phyloseq(
-  features = "table-V34-cyanobacteria.qza",
-  taxonomy = "taxonomy-V34-cyanobacteria.qza", 
-  metadata = "metadata-v1.tsv")
+  features = "data/table-V34-cyanobacteria.qza",
+  taxonomy = "data/taxonomy-V34-cyanobacteria.qza", 
+  metadata = "data/metadata-v1.tsv")
 cyano_v34_no_tree
 
 # top 20 records from taxonomy table
@@ -159,8 +159,86 @@ with(alpha_diversity_v34,cor.test(CCL,Observed))
 #  cor 
 # 0.8620069 
 
-# NMDS - trenutno me nešto zajebava što se tièe ovoga!!!
-# ord_nmds_bray_v34 <- ordinate(cyano_v34_rare_turtle, method="NMDS",k=3, distance="bray",trymax=50)
-# nmds_v34 <- plot_ordination(cyano_v34_rare_turtle, ord_nmds_bray, color="Age", title="Bray NMDS") + 
-  stat_ellipse(geom="polygon",aes(fill=Age),type="norm",alpha=0.3) + 
+# NMDS
+# NMDS - premalo podataka za dobar prikaz !!!
+ord_nmds_bray_v34 <- ordinate(cyano_v34_rare_turtle, method="NMDS",k=3, distance="bray",trymax=50)
+nmds_bray_v34 <- plot_ordination(cyano_v34_rare_turtle, ord_nmds_bray_v34, color="Age", shape ="Age", title="Bray-Curtis NMDS V34") +
+  geom_point(aes(colour = Age, shape = Age), size = 2) +
+  scale_shape_discrete(name  ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
+  scale_color_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
+  stat_ellipse(geom="polygon",type="norm",aes(colour=Age, fill=Age), alpha=0.2) + 
+  scale_fill_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
   theme_bw()
+nmds_bray_v34
+# In metaMDS(veganifyOTU(physeq), distance, ...) :
+# stress is (nearly) zero: you may have insufficient data
+# Too few points to calculate an ellipse
+
+#ggsave(filename = "figures/nmds_v34_bray_age.pdf", width = 6.75, height = 4, device = cairo_pdf)
+#ggsave(filename = "figures/nmds_v34_bray_age.jpg", width = 6.75, height = 4, dpi = 300)
+
+# Combined plot of alpha and beta diversity
+#(alpha_v6_observed_age + alpha_v34_shannon_age) / nmds_bray_v6
+#ggsave(filename = "figures/alpha_nmds_v34.pdf", width = 6.75, height = 8, device = cairo_pdf)
+#ggsave(filename = "figures/alpha_nmds_v34.jpg", width = 6.75, height = 8, dpi = 300)
+
+# Heatmaps
+
+cyano_v34_turtle_top20 <- prune_taxa(names(sort(taxa_sums(cyano_v34_turtle),TRUE)[1:20]), cyano_v34_turtle)
+plot_heatmap(cyano_v34_turtle_top20,"NMDS",distance = "bray")
+
+ggsave(filename = "figures/heatmap_v34_asv.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/heatmap_v34_asv.jpg", width = 6.75, height = 4, dpi = 300)
+
+plot_heatmap(cyano_v34_turtle_top20,"NMDS",
+             distance = "bray",
+             sample.label="Age",
+             sample.order = "CCL",
+             taxa.label = "Genus")
+
+ggsave(filename = "figures/heatmap_v34_genera.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/heatmap_v34_genera.jpg", width = 6.75, height = 4, dpi = 300)
+
+#Pheatmap package - Generate Metadata for Plotting Colours
+age_data<-data.frame(Age=sample_data(cyano_v34_turtle_top20)$Age)
+rownames(age_data)<-rownames(sample_data(cyano_v34_turtle_top20))
+
+#Plot Heatmap 
+pheatmap(otu_table(cyano_v34_turtle_top20),
+         cluster_cols = FALSE,
+         cluster_rows = FALSE,
+         scale="row",
+         annotation_col = age_data)
+
+# Taxa bar plots
+cyano_order_v34 <- cyano_v34_turtle %>%
+  aggregate_taxa(level = "Order") %>%  
+  microbiome::transform(transform = "compositional")
+
+plot_composition(cyano_order_v34)
+
+cyano_order_v34 %>%
+  plot_composition(average_by = "Age")+ scale_fill_brewer(palette="Set3")
+
+ggsave(filename = "figures/taxa_bar_plot_v34_order.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_plot_v34_order.jpg", width = 6.75, height = 4, dpi = 300)
+
+#### Run Again But With Top 'N' Phyla 
+
+#What Are the Names of the most abundant phyla?  
+cyano_v34_genus_collapse<- cyano_v34_turtle %>% aggregate_taxa(level="Genus")
+cyano_v34_top10genera = names(sort(taxa_sums(cyano_v34_genus_collapse), TRUE)[1:10])
+
+#Subset the phyloseq object to those phyla   
+cyano_v34_top10genera_filter<-subset_taxa(cyano_v34_turtle,Genus %in% cyano_v34_top10genera)
+
+#Remake Our Graph  but with grouping by CCL
+
+cyano_v34_top10genera_plot <- cyano_v34_top10genera_filter %>%
+  aggregate_taxa(level = "Genus") %>%  
+  microbiome::transform(transform = "compositional") %>%
+  plot_composition(sample.sort = "CCL")
+cyano_v34_top10genera_plot + scale_fill_brewer(palette="Set3")
+
+ggsave(filename = "figures/taxa_bar_plot_v34_genera.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_plot_v34_genera.jpg", width = 6.75, height = 4, dpi = 300)
