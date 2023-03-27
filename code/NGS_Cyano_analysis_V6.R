@@ -318,133 +318,127 @@ ggsave(filename = "figures/taxa_bar_plot_v6_genera.pdf", width = 6.75, height = 
 ggsave(filename = "figures/taxa_bar_plot_v6_genera.jpg", width = 6.75, height = 4, dpi = 300)
 
 
-
-#################### ORDINATION  USING VEGAN   
-
+### BETA DIVERISTY PLOT AND TESTS BASED ON CLR-TRANSFORMED DATA OF UNRAREFIED LIBRARY SIZES (XAH)
 
 #### Vegan Function to Convert Phyloseq into Something Vegan can call directly
-vegan_otu <- function(cyano) {
-  OTU <- otu_table(cyano)
-  if (taxa_are_rows(OTU)) {
-    OTU <- t(OTU)
+vegan_otu_v6 <- function(cyano_v6) {
+  OTU_v6 <- otu_table(cyano_v6)
+  if (taxa_are_rows(OTU_v6)) {
+    OTU_v6 <- t(OTU_v6)
   }
-  return(as(OTU, "matrix"))
+  return(as(OTU_v6, "matrix"))
 }
-
-#Load Libraries
-#library(vegan)
-#library(RColorBrewer)
-
-#Convert OTU table to abundance matrix
-cyano.v<-vegan_otu(cyano50_rare)
-cyano_turtles.v<-vegan_otu(cyano50_rare_turtles)
-
-#Convert Sample Data to data frame   
-cyano_turtles.s<-as(sample_data(cyano50_rare_turtles),"data.frame")
-
-###### NMDS Ordination
-cyano_turtles.nmds<-metaMDS(cyano_turtles.v,k=3,distance="bray",trymax = 50) 
-
-stressplot(cyano.nmds)
-
-##################### NMDS Plot using VEGAN
-
-
-#Select Some Colours from RColorBrewer  
-ordination_cols<-brewer.pal(5,"Set2")
-cols<-data.frame(pop=unique(cyano_turtles.s$Age),
-                 col=ordination_cols[1:length(unique(cyano_turtles.s$Age))])
-
-#Expand so that each sample in the database has a colour value  
-cols.expand<-as.character(cols[,2][match(cyano_turtles.s$Age,cols[,1])])
-cols<-cols[order(cols[,1]),]
-
-#Plot Axis Bounds
-plot(cyano_turtles.nmds,display="sites",type="n",las=1,ylab="",xaxt="n",yaxt="n",xlab="")
-
-#Add On A Spider linking each point to its population centroid  
-ordispider(cyano_turtles.nmds,cyano_turtles.s$Age,col="black",label=F)
-
-
-#Add an ellipse 
-#'ehull' is ellipsoid hull that encloses all points within a group
-#'#?ordiellipse for more options under option 'kind'
-#ordiellipse(cyano_turtles.nmds,cyano_turtles.s$Age,col="lightgray",label=F,kind="ehull")
-
-#Add the data points  
-with(cyano_turtles.s,points(cyano_turtles.nmds,display="sites",pch=21,bg=cols.expand,cex=2))
-
-#Add Axis Labels  
-#mtext(c('NMDS 1', 'NMDS 2'), side=c(1,2), adj=1, cex=1.5,font=2, line=c(1, 0))
-
-with(cyano.s,legend("bottomright",legend=cols[,1],pch=21,pt.bg=as.character(cols[,2]),bty="n",pt.cex=2))
-
-############### BETA DIVERISTY PLOT AND TESTS BASED ON CLR-TRANSFORMED DATA OF UNRAREFIED LIBRARY SIZES (XAH)
-
-
-#### Vegan Function to Convert Phyloseq into Something Vegan can call directly
-vegan_otu <- function(cyano) {
-  OTU <- otu_table(cyano)
-  if (taxa_are_rows(OTU)) {
-    OTU <- t(OTU)
-  }
-  return(as(OTU, "matrix"))
-}
-
-########### Transform Sample Counts
-library(microbiome)
 
 #CLR Transform  on unrarefied object
-cyano_clr <- microbiome::transform(cyano50, "clr")
-head(otu_table(cyano_clr))
+cyano_v6_clr <- microbiome::transform(cyano_v6, "clr")
+head(otu_table(cyano_v6_clr))
 
 #Extract Matrix and Sample Data  
-cyano_clr_v<-vegan_otu(cyano_clr)
-cyano_clr_s<-as(sample_data(cyano_clr),"data.frame")
+cyano_v6_clr_vegan<-vegan_otu_v6(cyano_v6_clr)
+cyano_v6_clr_sample<-as(sample_data(cyano_v6_clr),"data.frame")
 
 ######## Principal Components Analysis
-cyano_pc<-prcomp(cyano_clr_v)
+cyano_v6_pc<-prcomp(cyano_v6_clr_vegan)
 
 #Cool Biplot Showing How Diff ASVs affect the primary axes of the ordinatiton
-biplot(cyano_pc)
+biplot(cyano_v6_pc)
 
 #Scree plot of relative importance of explained by each axis
-plot(cyano_pc)
+plot(cyano_v6_pc)
 
 #Variance Explained by FIrst 2 axes  
-summary(cyano_pc)$importance[,1:2] # 
+summary(cyano_v6_pc)$importance[,1:2] # 
 
 #### Extract Scores for Plotting        
 library(vegan)
-cyano_pc_scores<-scores(cyano_pc)
-cyano_pc_scores_sub<-cyano_pc_scores[,1:2]
+cyano_v6_pc_scores<-scores(cyano_v6_pc)
+cyano_v6_pc_scores_sub<-cyano_v6_pc_scores[,1:2]
 #Add Sample Data  
-cyano_pc_scores_sub<-cbind(cyano_pc_scores_sub,cyano_clr_s)
+cyano_v6_pc_scores_sub<-cbind(cyano_v6_pc_scores_sub,cyano_v6_clr_sample)
 
-######### Plot
-library(ggplot2)
-library(cowplot)
 
 #Housekeeping + Label Setup    
 #cyano_pc_scores_sub$Species<-as.factor(cyano_pc_scores_sub$Full_names)
 
 
 #Plot    
-pca1<-ggplot(cyano_pc_scores_sub,aes(x=PC1,y=PC2)) + 
+pca1_v6<-ggplot(cyano_v6_pc_scores_sub,aes(x=PC1,y=PC2)) + 
   stat_ellipse(type="t",aes(color=Age),level = 0.95,alpha=0.5) + 
   geom_point(aes(colour=Age),size=5) 
 
-pca2<-pca1 + 
+pca2_v6<-pca1_v6 + 
   theme_bw() + 
   labs(fill="Transect Name",x="PC1 (11.7%)",y="PC2 (7.3%)") 
 
-pca3<-pca2 +  
+pca3_v6<-pca2_v6 +  
   theme(legend.position="top",
         axis.text=element_text(size=18),
         axis.title=element_text(size=20),
         legend.text = element_text(size=12),
         legend.title = element_text(size=18))
-pca3
+pca3_v6
+
+ggsave(filename = "figures/pca_clr_v6.pdf", width = 6.75, height = 8, device = cairo_pdf)
+ggsave(filename = "figures/pca_clr_v6.jpg", width = 6.75, height = 8, dpi = 300)
+
+### CLR beta diversity - only turtle samples
+
+vegan_otu_v6_turtle <- function(cyano_v6_turtle) {
+  OTU_v6_turtle <- otu_table(cyano_v6_turtle)
+  if (taxa_are_rows(OTU_v6_turtle)) {
+    OTU_v6_turtle <- t(OTU_v6_turtle)
+  }
+  return(as(OTU_v6_turtle, "matrix"))
+}
+
+#CLR Transform  on unrarefied object
+cyano_v6_turtle_clr <- microbiome::transform(cyano_v6_turtle, "clr")
+head(otu_table(cyano_v6_turtle_clr))
+
+#Extract Matrix and Sample Data  
+cyano_v6_turtle_clr_vegan<-vegan_otu_v6(cyano_v6_turtle_clr)
+cyano_v6_turtle_clr_sample<-as(sample_data(cyano_v6_turtle_clr),"data.frame")
+
+######## Principal Components Analysis
+cyano_v6_turtle_pc<-prcomp(cyano_v6_turtle_clr_vegan)
+
+#Cool Biplot Showing How Diff ASVs affect the primary axes of the ordinatiton
+biplot(cyano_v6_turtle_pc)
+
+#Scree plot of relative importance of explained by each axis
+plot(cyano_v6_turtle_pc)
+
+#Variance Explained by FIrst 2 axes  
+summary(cyano_v6_turtle_pc)$importance[,1:2] # 
+
+#### Extract Scores for Plotting        
+library(vegan)
+cyano_v6_turtle_pc_scores<-scores(cyano_v6_turtle_pc)
+cyano_v6_turtle_pc_scores_sub<-cyano_v6_turtle_pc_scores[,1:2]
+#Add Sample Data  
+cyano_v6_turtle_pc_scores_sub<-cbind(cyano_v6_turtle_pc_scores_sub,cyano_v6_turtle_clr_sample)
 
 
+#Housekeeping + Label Setup    
+#cyano_pc_scores_sub$Species<-as.factor(cyano_pc_scores_sub$Full_names)
 
+
+#Plot    
+pca1_v6_turtle<-ggplot(cyano_v6_turtle_pc_scores_sub,aes(x=PC1,y=PC2)) + 
+  stat_ellipse(type="t",aes(color=Age),level = 0.95,alpha=0.5) + 
+  geom_point(aes(colour=Age),size=5) 
+
+pca2_v6_turtle<-pca1_v6_turtle + 
+  theme_bw() + 
+  labs(fill="Transect Name",x="PC1 (11.7%)",y="PC2 (7.3%)") 
+
+pca3_v6_turtle<-pca2_v6_turtle +  
+  theme(legend.position="top",
+        axis.text=element_text(size=18),
+        axis.title=element_text(size=20),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=18))
+pca3_v6_turtle
+
+ggsave(filename = "figures/pca_clr_v6_turtles.pdf", width = 6.75, height = 8, device = cairo_pdf)
+ggsave(filename = "figures/pca_clr_v6_turtles.jpg", width = 6.75, height = 8, dpi = 300)

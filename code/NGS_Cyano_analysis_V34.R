@@ -242,3 +242,131 @@ cyano_v34_top10genera_plot + scale_fill_brewer(palette="Set3")
 
 ggsave(filename = "figures/taxa_bar_plot_v34_genera.pdf", width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_plot_v34_genera.jpg", width = 6.75, height = 4, dpi = 300)
+
+
+
+### BETA DIVERISTY PLOT AND TESTS BASED ON CLR-TRANSFORMED DATA OF UNRAREFIED LIBRARY SIZES (XAH)
+
+#### Vegan Function to Convert Phyloseq into Something Vegan can call directly
+vegan_otu_v34 <- function(cyano_v34) {
+  OTU_v34 <- otu_table(cyano_v34)
+  if (taxa_are_rows(OTU_v34)) {
+    OTU_v34 <- t(OTU_v34)
+  }
+  return(as(OTU_v34, "matrix"))
+}
+
+#CLR Transform  on unrarefied object
+cyano_v34_clr <- microbiome::transform(cyano_v34, "clr")
+head(otu_table(cyano_v34_clr))
+
+#Extract Matrix and Sample Data  
+cyano_v34_clr_vegan<-vegan_otu_v34(cyano_v34_clr)
+cyano_v34_clr_sample<-as(sample_data(cyano_v34_clr),"data.frame")
+
+######## Principal Components Analysis
+cyano_v34_pc<-prcomp(cyano_v34_clr_vegan)
+
+#Cool Biplot Showing How Diff ASVs affect the primary axes of the ordinatiton
+biplot(cyano_v34_pc)
+
+#Scree plot of relative importance of explained by each axis
+plot(cyano_v34_pc)
+
+#Variance Explained by FIrst 2 axes  
+summary(cyano_v34_pc)$importance[,1:2] # 
+
+#### Extract Scores for Plotting        
+library(vegan)
+cyano_v34_pc_scores<-scores(cyano_v34_pc)
+cyano_v34_pc_scores_sub<-cyano_v34_pc_scores[,1:2]
+#Add Sample Data  
+cyano_v34_pc_scores_sub<-cbind(cyano_v34_pc_scores_sub,cyano_v34_clr_sample)
+
+
+#Housekeeping + Label Setup    
+#cyano_pc_scores_sub$Species<-as.factor(cyano_pc_scores_sub$Full_names)
+
+
+#Plot    
+pca1_v34<-ggplot(cyano_v34_pc_scores_sub,aes(x=PC1,y=PC2)) + 
+  stat_ellipse(type="t",aes(color=Age),level = 0.95,alpha=0.5) + 
+  geom_point(aes(colour=Age),size=5) 
+
+pca2_v34<-pca1_v34 + 
+  theme_bw() + 
+  labs(fill="Transect Name",x="PC1 (11.7%)",y="PC2 (7.3%)") 
+
+pca3_v34<-pca2_v34 +  
+  theme(legend.position="top",
+        axis.text=element_text(size=18),
+        axis.title=element_text(size=20),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=18))
+pca3_v34
+
+ggsave(filename = "figures/pca_clr_v34.pdf", width = 6.75, height = 8, device = cairo_pdf)
+ggsave(filename = "figures/pca_clr_v34.jpg", width = 6.75, height = 8, dpi = 300)
+
+### CLR beta diversity - only turtle samples
+
+vegan_otu_v34_turtle <- function(cyano_v34_turtle) {
+  OTU_v34_turtle <- otu_table(cyano_v34_turtle)
+  if (taxa_are_rows(OTU_v34_turtle)) {
+    OTU_v34_turtle <- t(OTU_v34_turtle)
+  }
+  return(as(OTU_v34_turtle, "matrix"))
+}
+
+#CLR Transform  on unrarefied object
+cyano_v34_turtle_clr <- microbiome::transform(cyano_v34_turtle, "clr")
+head(otu_table(cyano_v34_turtle_clr))
+
+#Extract Matrix and Sample Data  
+cyano_v34_turtle_clr_vegan<-vegan_otu_v34(cyano_v34_turtle_clr)
+cyano_v34_turtle_clr_sample<-as(sample_data(cyano_v34_turtle_clr),"data.frame")
+
+######## Principal Components Analysis
+cyano_v34_turtle_pc<-prcomp(cyano_v34_turtle_clr_vegan)
+
+#Cool Biplot Showing How Diff ASVs affect the primary axes of the ordinatiton
+biplot(cyano_v34_turtle_pc)
+
+#Scree plot of relative importance of explained by each axis
+plot(cyano_v34_turtle_pc)
+
+#Variance Explained by FIrst 2 axes  
+summary(cyano_v34_turtle_pc)$importance[,1:2] # 
+
+#### Extract Scores for Plotting        
+library(vegan)
+cyano_v34_turtle_pc_scores<-scores(cyano_v34_turtle_pc)
+cyano_v34_turtle_pc_scores_sub<-cyano_v34_turtle_pc_scores[,1:2]
+#Add Sample Data  
+cyano_v34_turtle_pc_scores_sub<-cbind(cyano_v34_turtle_pc_scores_sub,cyano_v34_turtle_clr_sample)
+
+
+#Housekeeping + Label Setup    
+#cyano_pc_scores_sub$Species<-as.factor(cyano_pc_scores_sub$Full_names)
+
+
+#Plot    
+pca1_v34_turtle<-ggplot(cyano_v34_turtle_pc_scores_sub,aes(x=PC1,y=PC2)) + 
+  stat_ellipse(type="t",aes(color=Age),level = 0.95,alpha=0.5) + 
+  geom_point(aes(colour=Age),size=5) 
+
+pca2_v34_turtle<-pca1_v34_turtle + 
+  theme_bw() + 
+  labs(fill="Transect Name",x="PC1 (11.7%)",y="PC2 (7.3%)") 
+
+pca3_v34_turtle<-pca2_v34_turtle +  
+  theme(legend.position="top",
+        axis.text=element_text(size=18),
+        axis.title=element_text(size=20),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=18))
+pca3_v34_turtle
+
+ggsave(filename = "figures/pca_clr_v34_turtles.pdf", width = 6.75, height = 8, device = cairo_pdf)
+ggsave(filename = "figures/pca_clr_v34_turtles.jpg", width = 6.75, height = 8, dpi = 300)
+
