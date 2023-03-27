@@ -340,9 +340,6 @@ cyano_v6_clr_sample<-as(sample_data(cyano_v6_clr),"data.frame")
 ######## Principal Components Analysis
 cyano_v6_pc<-prcomp(cyano_v6_clr_vegan)
 
-#Cool Biplot Showing How Diff ASVs affect the primary axes of the ordinatiton
-biplot(cyano_v6_pc)
-
 #Scree plot of relative importance of explained by each axis
 plot(cyano_v6_pc)
 
@@ -356,30 +353,19 @@ cyano_v6_pc_scores_sub<-cyano_v6_pc_scores[,1:2]
 #Add Sample Data  
 cyano_v6_pc_scores_sub<-cbind(cyano_v6_pc_scores_sub,cyano_v6_clr_sample)
 
-
-#Housekeeping + Label Setup    
-#cyano_pc_scores_sub$Species<-as.factor(cyano_pc_scores_sub$Full_names)
-
-
 #Plot    
-pca1_v6<-ggplot(cyano_v6_pc_scores_sub,aes(x=PC1,y=PC2)) + 
-  stat_ellipse(type="t",aes(color=Age),level = 0.95,alpha=0.5) + 
-  geom_point(aes(colour=Age),size=5) 
-
-pca2_v6<-pca1_v6 + 
+pca_v6<-ggplot(cyano_v6_pc_scores_sub,aes(x=PC1,y=PC2)) + 
+  stat_ellipse(geom="polygon",type="t",aes(color=Age, fill=Age),level=0.95,alpha=0.2) + 
+  geom_point(aes(colour = Age, shape = Age), size = 2) +
+  scale_shape_discrete(name  ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult", "rocks", "pool", "negctrl")) +
+  scale_color_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult", "rocks", "pool", "negctrl")) +
+  scale_fill_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult", "rocks", "pool", "negctrl")) +
   theme_bw() + 
-  labs(fill="Transect Name",x="PC1 (11.7%)",y="PC2 (7.3%)") 
+  labs(x="PC1 (14.7%)",y="PC2 (12.8%)")
+pca_v6
 
-pca3_v6<-pca2_v6 +  
-  theme(legend.position="top",
-        axis.text=element_text(size=18),
-        axis.title=element_text(size=20),
-        legend.text = element_text(size=12),
-        legend.title = element_text(size=18))
-pca3_v6
-
-ggsave(filename = "figures/pca_clr_v6.pdf", width = 6.75, height = 8, device = cairo_pdf)
-ggsave(filename = "figures/pca_clr_v6.jpg", width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/pca_clr_v6.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/pca_clr_v6.jpg", width = 6.75, height = 4, dpi = 300)
 
 ### CLR beta diversity - only turtle samples
 
@@ -402,9 +388,6 @@ cyano_v6_turtle_clr_sample<-as(sample_data(cyano_v6_turtle_clr),"data.frame")
 ######## Principal Components Analysis
 cyano_v6_turtle_pc<-prcomp(cyano_v6_turtle_clr_vegan)
 
-#Cool Biplot Showing How Diff ASVs affect the primary axes of the ordinatiton
-biplot(cyano_v6_turtle_pc)
-
 #Scree plot of relative importance of explained by each axis
 plot(cyano_v6_turtle_pc)
 
@@ -412,33 +395,22 @@ plot(cyano_v6_turtle_pc)
 summary(cyano_v6_turtle_pc)$importance[,1:2] # 
 
 #### Extract Scores for Plotting        
-library(vegan)
+#library(vegan)
 cyano_v6_turtle_pc_scores<-scores(cyano_v6_turtle_pc)
 cyano_v6_turtle_pc_scores_sub<-cyano_v6_turtle_pc_scores[,1:2]
 #Add Sample Data  
 cyano_v6_turtle_pc_scores_sub<-cbind(cyano_v6_turtle_pc_scores_sub,cyano_v6_turtle_clr_sample)
 
-
-#Housekeeping + Label Setup    
-#cyano_pc_scores_sub$Species<-as.factor(cyano_pc_scores_sub$Full_names)
-
-
 #Plot    
-pca1_v6_turtle<-ggplot(cyano_v6_turtle_pc_scores_sub,aes(x=PC1,y=PC2)) + 
-  stat_ellipse(type="t",aes(color=Age),level = 0.95,alpha=0.5) + 
-  geom_point(aes(colour=Age),size=5) 
-
-pca2_v6_turtle<-pca1_v6_turtle + 
+pca_v6_turtle<-ggplot(cyano_v6_turtle_pc_scores_sub,aes(x=PC1,y=PC2)) + 
+  stat_ellipse(geom="polygon",type="t",aes(color=Age, fill=Age),level = 0.95,alpha=0.2) + 
+  geom_point(aes(colour = Age, shape = Age), size = 2) +
+  scale_shape_discrete(name  ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
+  scale_color_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
+  scale_fill_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
   theme_bw() + 
-  labs(fill="Transect Name",x="PC1 (11.7%)",y="PC2 (7.3%)") 
+  labs(x="PC1 (17.2%)",y="PC2 (10.6%)") 
+pca_v6_turtle
 
-pca3_v6_turtle<-pca2_v6_turtle +  
-  theme(legend.position="top",
-        axis.text=element_text(size=18),
-        axis.title=element_text(size=20),
-        legend.text = element_text(size=12),
-        legend.title = element_text(size=18))
-pca3_v6_turtle
-
-ggsave(filename = "figures/pca_clr_v6_turtles.pdf", width = 6.75, height = 8, device = cairo_pdf)
-ggsave(filename = "figures/pca_clr_v6_turtles.jpg", width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/pca_clr_v6_turtles.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/pca_clr_v6_turtles.jpg", width = 6.75, height = 4, dpi = 300)
