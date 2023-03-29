@@ -297,6 +297,12 @@ cyano_order_v6 %>%
 ggsave(filename = "figures/taxa_bar_plot_v6_order.pdf", width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_plot_v6_order.jpg", width = 6.75, height = 4, dpi = 300)
 
+order_v6 <- cyano_order_v6 %>%
+  plot_composition(average_by = "SampleType")+ scale_fill_brewer(palette="Set3")
+order_v6
+
+
+
 #### Run Again But With Top 'N' Phyla 
 
 #What Are the Names of the most abundant phyla?  

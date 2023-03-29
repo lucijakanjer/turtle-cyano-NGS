@@ -223,7 +223,11 @@ cyano_order_v34 %>%
 ggsave(filename = "figures/taxa_bar_plot_v34_order.pdf", width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_plot_v34_order.jpg", width = 6.75, height = 4, dpi = 300)
 
-#### Run Again But With Top 'N' Phyla 
+order_v34 <- cyano_order_v34 %>%
+  plot_composition(average_by = "SampleType")+ scale_fill_brewer(palette="Set3")
+order_v34
+
+#### Run Again But With Top 'N' Genera 
 
 #What Are the Names of the most abundant phyla?  
 cyano_v34_genus_collapse<- cyano_v34_turtle %>% aggregate_taxa(level="Genus")
