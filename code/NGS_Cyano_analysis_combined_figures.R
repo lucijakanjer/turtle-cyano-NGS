@@ -1,40 +1,81 @@
 # Combined V34 and V6 figures
 
+## Microbiome Tools
+library(phyloseq)
+library(vegan)
+library(microbiome)
 
-order_v34 + order_v6
-ggsave(filename = "figures/taxa_bar_plot_order_combo.pdf", width = 6.75, height = 4, device = cairo_pdf)
-ggsave(filename = "figures/taxa_bar_plot_order_combo.jpg", width = 6.75, height = 4, dpi = 300)
+#install.packages("devtools")
+#devtools::install_github("jbisanz/qiime2R")
+library(qiime2R) #for importing QIIME artifacts into phyloseq
+
+library(DESeq2)
+library(labdsv)
+library(ALDEx2)
+
+##Plotting     
+#library(ggplot2)
+library(RColorBrewer) #pretty colour pallettes
+library(gplots)   #venn diagrams
+library(cowplot) #saving graphs
+library(pheatmap) #alternative heatmaps
+library(patchwork)
+
+#Data Manipulation
+library(tidyverse)
+library(MicrobeDS)
+
+# Building phyloseq object without the phylogenetic tree
+cyano_combined <- qza_to_phyloseq(
+  features = "data/table-combined-cyanobacteria.qza",
+  taxonomy = "data/taxonomy-combined-cyanobacteria.qza", 
+  metadata = "data/metadata-combined.tsv")
+cyano_combined
+
+cyano_combined_turtle <- prune_samples(sample_data(cyano_combined)$SampleType =="carapace",cyano_combined)
+cyano_combined_turtle
+
+# Taxa bar plots
+cyano_order <- cyano_combined_turtle %>%
+  aggregate_taxa(level = "Order") %>%  
+  microbiome::transform(transform = "compositional")
+
+cyano_order %>%
+  plot_composition(average_by = "Region")
+
+ggsave(filename = "figures/taxa_bar_plot_combo_order.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_plot_combo_order.jpg", width = 6.75, height = 4, dpi = 300)
+
+cyano_family <- cyano_combined_turtle %>%
+  aggregate_taxa(level = "Family") %>%  
+  microbiome::transform(transform = "compositional")
+
+cyano_family %>%
+  plot_composition(average_by = "Region")
+
+ggsave(filename = "figures/taxa_bar_plot_combo_family.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_plot_combo_family.jpg", width = 6.75, height = 4, dpi = 300)
 
 
-cyano_v34_genus_collapse_otu_table <- data.frame(otu_table(cyano_v34_genus_collapse))
-cyano_v34_genus_collapse_otu_table$Genus<-rownames(cyano_v34_genus_collapse_otu_table)
+#### Run Again But With Top 'N' Phyla 
 
-cyano_v6_genus_collapse_otu_table <- data.frame(otu_table(cyano_v6_genus_collapse))
-cyano_v6_genus_collapse_otu_table$Genus<-rownames(cyano_v6_genus_collapse_otu_table)
+#What Are the Names of the most abundant phyla?  
+cyano_combined_genus_collapse<- cyano_combined_turtle %>% aggregate_taxa(level="Genus")
+cyano_combined_top12genera = names(sort(taxa_sums(cyano_combined_genus_collapse), TRUE)[1:13])
 
+#Subset the phyloseq object to those phyla   
+cyano_combined_top12genera_filter<-subset_taxa(cyano_combined_turtle,Genus %in% cyano_combined_top12genera)
 
+#Remake Our Graph  but with grouping by CCL
 
-cyano_genus_combined <- full_join(cyano_v34_genus_collapse_otu_table,cyano_v6_genus_collapse_otu_table, by = "Genus")
-
-
-cyano_genus_combined_plot <-ggplot(cyano_genus_combined, aes(fill=Genus), x=TB159, y=1) + 
-  geom_bar(position="fill", stat="identity") +  
-  theme_classic() 
-cyano_genus_combined_plot
-
-test_cyano_merge_taxa <- merge_taxa(cyano_v34, cyano_v6)
-
-test_cyano_merge_taxa <- merge_taxa(cyano_v34_top10genera_filter, cyano_v6_top10genera_filter)
-test_cyano_merge_samples <- merge_samples(cyano_v34_top10genera_filter, cyano_v6_top10genera_filter)
-
-test_cyano_merge_phyloseq <- merge_phyloseq(cyano_v34_top10genera_filter, cyano_v6_top10genera_filter)
-
-test_cyano_merge_taxa_plot <- test_cyano_merge_taxa %>%
+cyano_combined_top12genera_plot <- cyano_combined_top12genera_filter %>%
   aggregate_taxa(level = "Genus") %>%  
   microbiome::transform(transform = "compositional") %>%
-  plot_composition(sample.sort = "CCL")
-test_cyano_merge_taxa_plot + scale_fill_brewer(palette="Set3")
+  plot_composition(average_by = "Region")
+cyano_combined_top10genera_plot + scale_fill_brewer(palette="Set3")+theme_bw()
 
-plot_composition(test_cyano_merge_taxa,
-                 sample.sort = CCL,
-                 A)
+ggsave(filename = "figures/taxa_bar_plot_combo_genera.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_plot_combo_genera.jpg", width = 6.75, height = 4, dpi = 300)
+
+
+
