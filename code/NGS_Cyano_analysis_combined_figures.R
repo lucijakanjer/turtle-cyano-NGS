@@ -20,6 +20,7 @@ library(gplots)   #venn diagrams
 library(cowplot) #saving graphs
 library(pheatmap) #alternative heatmaps
 library(patchwork)
+library(ggsci)
 
 #Data Manipulation
 library(tidyverse)
@@ -40,8 +41,12 @@ cyano_order <- cyano_combined_turtle %>%
   aggregate_taxa(level = "Order") %>%  
   microbiome::transform(transform = "compositional")
 
-cyano_order %>%
-  plot_composition(average_by = "Region")
+order_combined <- cyano_order %>%
+  plot_composition(average_by = "Region")+ 
+  theme_minimal()+
+  scale_fill_manual(values = safe_colorblind_palette_14)+
+  labs(title="Cyanobacterial Orders", x="", y="Relative abundance")
+order_combined
 
 ggsave(filename = "figures/taxa_bar_plot_combo_order.pdf", width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_plot_combo_order.jpg", width = 6.75, height = 4, dpi = 300)
@@ -66,16 +71,30 @@ cyano_combined_top12genera = names(sort(taxa_sums(cyano_combined_genus_collapse)
 #Subset the phyloseq object to those phyla   
 cyano_combined_top12genera_filter<-subset_taxa(cyano_combined_turtle,Genus %in% cyano_combined_top12genera)
 
-#Remake Our Graph  but with grouping by CCL
 
 cyano_combined_top12genera_plot <- cyano_combined_top12genera_filter %>%
   aggregate_taxa(level = "Genus") %>%  
   microbiome::transform(transform = "compositional") %>%
   plot_composition(average_by = "Region")
-cyano_combined_top10genera_plot + scale_fill_brewer(palette="Set3")+theme_bw()
+genera_combined <- cyano_combined_top12genera_plot+
+  theme_minimal()+ 
+  scale_fill_manual(values = safe_colorblind_palette_12, name="Taxa")+
+  labs(title= "Top 12 Cyanobacterial Genera",x="", y="Relative abundance")
+genera_combined
 
 ggsave(filename = "figures/taxa_bar_plot_combo_genera.pdf", width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_plot_combo_genera.jpg", width = 6.75, height = 4, dpi = 300)
+
+order_combined / genera_combined
+
+ggsave(filename = "figures/taxa_bar_plot_combo_order_genera.pdf", width = 6.75, height = 8, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_plot_combo_order_genera.jpg", width = 6.75, height = 8, dpi = 300)
+
+safe_colorblind_palette_14 <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
+                             "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "sienna3", "olivedrab3", "#888888")
+
+safe_colorblind_palette_12 <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
+                                "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
 
 
 
