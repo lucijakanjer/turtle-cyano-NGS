@@ -37,6 +37,7 @@ points(14.43973,44.54774, col=2,pch=19)
 map(col="grey80", border = "grey40", fill = TRUE,
     xlim = c(-25, 50), ylim = c(30, 70), mar = rep(0.1, 4))
 map.scale(relwidth = 0.20, metric = TRUE, ratio = FALSE)
+box()
 
 citation("maps")
 citation("mapdata")

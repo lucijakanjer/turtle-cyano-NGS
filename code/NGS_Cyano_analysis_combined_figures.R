@@ -51,6 +51,16 @@ order_combined
 ggsave(filename = "figures/taxa_bar_plot_combo_order.pdf", width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_plot_combo_order.jpg", width = 6.75, height = 4, dpi = 300)
 
+order_combined <- cyano_order %>%
+  plot_composition(sample.sort = "CCL")+ 
+  #  theme_minimal()+
+  scale_fill_manual(values = safe_colorblind_palette_14)+
+  labs(title="Cyanobacterial Orders", x="", y="Relative abundance")
+order_combined
+
+ggsave(filename = "figures/taxa_bar_plot_combo_order_sample.pdf", width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_plot_combo_order_sample.jpg", width = 6.75, height = 4, dpi = 300)
+
 cyano_family <- cyano_combined_turtle %>%
   aggregate_taxa(level = "Family") %>%  
   microbiome::transform(transform = "compositional")
