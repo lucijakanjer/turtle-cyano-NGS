@@ -30,6 +30,8 @@ cyano_v6_rare_turtle <- prune_samples(sample_data(cyano_v6_rare)$SampleType =="c
 cyano_v6_rare_turtle
 
 ### Alpha diversity
+alpha_diversity_v6_all <- estimate_richness(cyano_v6_rare,
+                                        measures=c("Observed","Shannon","InvSimpson"))
 
 alpha_diversity_v6 <- estimate_richness(cyano_v6_rare_turtle,
                                         measures=c("Observed","Shannon","InvSimpson"))
