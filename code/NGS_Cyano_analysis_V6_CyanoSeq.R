@@ -22,6 +22,7 @@ cyano_v6
 
 # rarefaction
 cyano_v6_rare <- rarefy_even_depth(cyano_v6,10098,rngseed = 777)
+cyano_v6_rare
 
 cyano_v6_turtle <- prune_samples(sample_data(cyano_v6)$SampleType =="carapace",cyano_v6)
 cyano_v6_turtle

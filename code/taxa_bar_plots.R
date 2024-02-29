@@ -74,7 +74,7 @@ ggsave(filename = "figures/taxa_bar_plot_v6_facets_turtles.jpg",
 
 taxa6 <- ggplot(df_plot2, aes(x = sample, y = count, fill = taxa)) +
   geom_bar(stat = "identity") +
-  labs(x = "Samples", y = "Relative abundance") +
+  labs(x = "Samples", y = "Relative abundance", tag = "B") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   #guides(fill = "none") +
@@ -158,7 +158,7 @@ ggsave(filename = "figures/taxa_bar_plot_v6_facets_turtles_order.jpg",
 
 taxa4 <- ggplot(df_plot4_2, aes(x = sample, y = count, fill = taxa)) +
   geom_bar(stat = "identity") +
-  labs(x = "Samples", y = "Relative abundance") +
+  labs(x = "Samples", y = "Relative abundance", tag = "A") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   #guides(fill = "none") +
