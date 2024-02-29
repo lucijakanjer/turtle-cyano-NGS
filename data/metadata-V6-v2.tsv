@@ -1,34 +1,34 @@
-SampleID	SampleType	TurtleID	AnimalName	AgeOld	Age	CCL	CCW	AdmissionDate	SamplingDate	RecoveryCentre	State	Condition
-#q2:types						numeric	numeric	categorical				
-V6-TB159	carapace	ID093	Ella Ravka	sub-adult	sub-adult	62	58	30.6.2020	30.6.2020	Aquarium Pula	WILD	injured
-V6-TB163	carapace	ID094	Huanita	sub-adult	sub-adult	68	66	13.3.2020	20.3.2020	Aquarium Pula	DURING	plastic
-V6-TB167	carapace	ID096	Maro	sub-adult	sub-adult	67	63.2	25.6.2020	21.7.2020	Aquarium Pula	DURING	injured
-V6-TB175	carapace	ID098	Maksimus	sub-adult	juvenile	45.2	44.2	26.7.2020	28.7.2020	Aquarium Pula	DURING	floating
-V6-TB177	carapace	ID099	Spela	adult	sub-adult	68	67	30.7.2020	3.8.2020	Aquarium Pula	DURING	floating
-V6-TB181	carapace	ID100	CC_VIS_2001	sub-adult	juvenile	42	37		29.6.2020	Blue World Institute	WILD	good
-V6-TB183	carapace	ID101	CC_VIS_2002	juvenile	juvenile	31	29		11.8.2020	Blue World Institute	WILD	good
-V6-TB185	carapace	ID102	CC_VIS_2003	juvenile	juvenile	31	28		20.8.2020	Blue World Institute	WILD	good
-V6-TB189	carapace	ID104	Valbiska	juvenile	juvenile	30	27.5	9.10.2020	5.11.2020	Blue World Institute	DURING	injured
-V6-TB191	carapace	ID105	FS94	adult	sub-adult	67.5	66	28.11.2020	30.11.2020	Blue World Institute	WILD	good
-V6-TB195	carapace	ID107	FS35	sub-adult	juvenile	45	41	28.11.2020	10.12.2020	Blue World Institute	DURING	good
-V6-TB197	carapace	ID108	FS25	adult	adult	70	67	18.12.2020	19.12.2020	Blue World Institute	WILD	good
-V6-TB199	carapace	ID109	FS60	adult	adult	73	68	18.12.2020	19.12.2020	Blue World Institute	WILD	good
-V6-TB201	carapace	ID110	APOX	juvenile	juvenile	36	34	12.1.2021	14.1.2021	Blue World Institute	DURING	injured
-V6-TB203	carapace	ID111	CC_LOSINJ_2102	sub-adult	juvenile	55	53.5	23.1.2021	25.1.2021	Blue World Institute	DURING	injured
-V6-TB205	carapace	ID112	ZLATA	juvenile	juvenile	35.5	33	30.1.2021	3.2.2021	Blue World Institute	DURING	stranded
-V6-TB207	carapace	ID113	NOEMI	sub-adult	juvenile	40.5	38	14.2.2021	16.2.2021	Blue World Institute	DURING	injured
-V6-TB209	carapace	ID114	SANJIN	juvenile	juvenile	32	29	15.2.2021	16.2.2021	Blue World Institute	DURING	injured
-V6-TB211	carapace	ID115	CC_LOSINJ_2106	sub-adult	juvenile	40	38	7.3.2021	08.03.2021 	Blue World Institute	N/A	injured
-V6-TB213	carapace	ID116	NATANAEL	juvenile	juvenile	33	29	9.3.2021	10.03.2021 	Blue World Institute	DURING	weak
-V6-TB215	carapace	ID117	KARLO ALBANO	adult	adult	73	73	19.3.2021	25.3.2021	Aquarium Pula	BEFORE	floating
-V6-TB217	carapace	ID118	OLIVER RAUL	juvenile	juvenile	26	24.2	20.4.2021	23.4.2021	Aquarium Pula	BEFORE	injured
-V6-TB219	carapace	ID119	MARTIN	juvenile	juvenile	37.8	34.8	21.4.2021	23.4.2021	Aquarium Pula	BEFORE	injured
-V6-TB221	carapace	ID120	CC_LOSINJ_2112	juvenile	juvenile	31	28	23.5.2021	25.5.2021	Blue World Institute	DURING	floating
-V6-TB223	carapace	ID121	BOVA	adult	adult	70	64	5.6.2021	8.6.2021	Blue World Institute	DURING	injured
-V6-TB227	carapace	ID123	CALIMERO	sub-adult	juvenile	52	52	1.4.2021	6.4.2021	Blue World Institute	DURING	injured
-V6-TB229	carapace	ID124	MARIJANA	juvenile	juvenile	26	23	5.4.2021	6.4.2021	Blue World Institute	DURING	floating
-V6-TB231	carapace	ID125	CC_LOSINJ_2111	juvenile	juvenile	27	25.5	20.4.2021	21.4.2021	Blue World Institute	from deceased	floating
-V6-TB217P	pool	pool	pool	pool	pool			pool		pool	pool	pool
-V6-TB219P	pool	pool	pool	pool	pool			pool		pool	pool	pool
-V6-VRS	rocks	rocks	rocks	rocks	rocks			rocks		rocks	rocks	rocks
-V6-negctrl	negctrl	negctrl	negctrl	negctrl	negctrl			negctrl		negctrl	negctrl	negctrl
+SampleID	SampleType	TurtleID	AnimalName	AgeOld	Age	CCL	CCW	AdmissionDate	SamplingDate	RecoveryCentre	State	Condition	lon	lat
+#q2:types						numeric	numeric	categorical						
+V6-TB159	carapace	ID093	Ella Ravka	sub-adult	sub-adult	62	58	30.6.2020	30.6.2020	Aquarium Pula	WILD	injured	15.23235	44.11306
+V6-TB163	carapace	ID094	Huanita	sub-adult	sub-adult	68	66	13.3.2020	20.3.2020	Aquarium Pula	DURING	plastic	16.90186	42.77756
+V6-TB167	carapace	ID096	Maro	sub-adult	sub-adult	67	63.2	25.6.2020	21.7.2020	Aquarium Pula	DURING	injured	17.14156	42.95932
+V6-TB175	carapace	ID098	Maksimus	sub-adult	juvenile	45.2	44.2	26.7.2020	28.7.2020	Aquarium Pula	DURING	floating	13.89056	44.75832
+V6-TB177	carapace	ID099	Spela	adult	sub-adult	68	67	30.7.2020	3.8.2020	Aquarium Pula	DURING	floating	13.75431	44.98378
+V6-TB181	carapace	ID100	CC_VIS_2001	sub-adult	juvenile	42	37		29.6.2020	Blue World Institute	WILD	good	16.03579	42.90401
+V6-TB183	carapace	ID101	CC_VIS_2002	juvenile	juvenile	31	29		11.8.2020	Blue World Institute	WILD	good	15.85258	42.9546
+V6-TB185	carapace	ID102	CC_VIS_2003	juvenile	juvenile	31	28		20.8.2020	Blue World Institute	WILD	good	16.09005	42.9536
+V6-TB189	carapace	ID104	Valbiska	juvenile	juvenile	30	27.5	9.10.2020	5.11.2020	Blue World Institute	DURING	injured	14.57858	45.02314
+V6-TB191	carapace	ID105	FS94	adult	sub-adult	67.5	66	28.11.2020	30.11.2020	Blue World Institute	WILD	good	14.28518	44.50634
+V6-TB195	carapace	ID107	FS35	sub-adult	juvenile	45	41	28.11.2020	10.12.2020	Blue World Institute	DURING	good	14.28518	44.50634
+V6-TB197	carapace	ID108	FS25	adult	adult	70	67	18.12.2020	19.12.2020	Blue World Institute	WILD	good	14.28518	44.50634
+V6-TB199	carapace	ID109	FS60	adult	adult	73	68	18.12.2020	19.12.2020	Blue World Institute	WILD	good	14.28518	44.50634
+V6-TB201	carapace	ID110	APOX	juvenile	juvenile	36	34	12.1.2021	14.1.2021	Blue World Institute	DURING	injured	14.44744	44.54678
+V6-TB203	carapace	ID111	CC_LOSINJ_2102	sub-adult	juvenile	55	53.5	23.1.2021	25.1.2021	Blue World Institute	DURING	injured	14.40861	44.57298
+V6-TB205	carapace	ID112	ZLATA	juvenile	juvenile	35.5	33	30.1.2021	3.2.2021	Blue World Institute	DURING	stranded	14.4418	44.54294
+V6-TB207	carapace	ID113	NOEMI	sub-adult	juvenile	40.5	38	14.2.2021	16.2.2021	Blue World Institute	DURING	injured	14.50811	44.52218
+V6-TB209	carapace	ID114	SANJIN	juvenile	juvenile	32	29	15.2.2021	16.2.2021	Blue World Institute	DURING	injured	14.44744	44.54678
+V6-TB211	carapace	ID115	CC_LOSINJ_2106	sub-adult	juvenile	40	38	7.3.2021	08.03.2021 	Blue World Institute	N/A	injured	14.40082	44.61342
+V6-TB213	carapace	ID116	NATANAEL	juvenile	juvenile	33	29	9.3.2021	10.03.2021 	Blue World Institute	DURING	weak		
+V6-TB215	carapace	ID117	KARLO ALBANO	adult	adult	73	73	19.3.2021	25.3.2021	Aquarium Pula	BEFORE	floating	15.19374	43.88625
+V6-TB217	carapace	ID118	OLIVER RAUL	juvenile	juvenile	26	24.2	20.4.2021	23.4.2021	Aquarium Pula	BEFORE	injured	13.93734	44.80744
+V6-TB219	carapace	ID119	MARTIN	juvenile	juvenile	37.8	34.8	21.4.2021	23.4.2021	Aquarium Pula	BEFORE	injured	14.47877	44.53431
+V6-TB221	carapace	ID120	CC_LOSINJ_2112	juvenile	juvenile	31	28	23.5.2021	25.5.2021	Blue World Institute	DURING	floating	14.42382	44.56873
+V6-TB223	carapace	ID121	BOVA	adult	adult	70	64	5.6.2021	8.6.2021	Blue World Institute	DURING	injured	16.051	42.991
+V6-TB227	carapace	ID123	CALIMERO	sub-adult	juvenile	52	52	1.4.2021	6.4.2021	Blue World Institute	DURING	injured	14.18147	44.51976
+V6-TB229	carapace	ID124	MARIJANA	juvenile	juvenile	26	23	5.4.2021	6.4.2021	Blue World Institute	DURING	floating	14.58064	44.67156
+V6-TB231	carapace	ID125	CC_LOSINJ_2111	juvenile	juvenile	27	25.5	20.4.2021	21.4.2021	Blue World Institute	from deceased	floating	14.43973	44.54774
+V6-TB217P	pool	pool	pool	pool	pool			pool		pool	pool	pool		
+V6-TB219P	pool	pool	pool	pool	pool			pool		pool	pool	pool		
+V6-VRS	rocks	rocks	rocks	rocks	rocks			rocks		rocks	rocks	rocks		
+V6-negctrl	negctrl	negctrl	negctrl	negctrl	negctrl			negctrl		negctrl	negctrl	negctrl		
