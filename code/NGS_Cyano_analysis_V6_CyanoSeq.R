@@ -1,16 +1,12 @@
+# Load required packages
+library(phyloseq) #analyzing metabarcoding data
+library(vegan) #for ecology statistics
+library(qiime2R) #importing qiime artifacts to phyloseq
+library(tidyverse) #ggplot2, dplyr included
+library(RColorBrewer) #for color palettes
+library(patchwork) #arranging graphs
+library(ggvenn) #venn diagrams
 
-library(phyloseq)
-library(vegan)
-#install.packages("devtools")
-#devtools::install_github("jbisanz/qiime2R")
-library(qiime2R)
-
-library(ggplot2)
-library(RColorBrewer)
-library(cowplot)
-library(patchwork)
-
-library(tidyverse)
 
 ### Build Phyloseq Object 
 cyano_v6 <- qza_to_phyloseq(
@@ -176,7 +172,6 @@ plot(cyano_v6_pc_turtle)
 summary(cyano_v6_pc_turtle)$importance[,1:2] # 
 
 # Extract Scores for Plotting        
-library(vegan)
 cyano_v6_pc_scores_turtle<-scores(cyano_v6_pc_turtle)
 cyano_v6_pc_scores_sub_turtle<-cyano_v6_pc_scores_turtle[,1:2]
 #Add Sample Data  
@@ -221,3 +216,58 @@ ggsave(filename = "figures/alpha_pca_v6.jpg", width = 6.75, height = 8, dpi = 30
 (alpha_v6_observed_coast + alpha_v6_shannon_coast) / pca_v6_turtle_coast 
 ggsave(filename = "figures/alpha_pca_v6_coast.pdf", width = 6.75, height = 8, device = cairo_pdf)
 ggsave(filename = "figures/alpha_pca_v6_coast.jpg", width = 6.75, height = 8, dpi = 300)
+
+### Venn diagram
+# Subset Based On age
+# Juveniles
+juveniles<-prune_samples(sample_data(cyano_v6_rare_turtle)$Age =="juvenile",
+                         cyano_v6_rare_turtle)
+
+# Work out which ASVs are present (>0 abundance) 
+juveniles_keep<-apply(otu_table(juveniles),1,function(x){sum(x)>0})
+
+# Subset to Only Those ASVS  
+juveniles_sub<-prune_taxa(juveniles_keep,juveniles)
+
+# Strip Out the Row names of the Subsetted Object  
+juveniles_asvs<-rownames(otu_table(juveniles_sub))
+head(juveniles_asvs)
+
+# subadults
+subadults<-prune_samples(sample_data(cyano_v6_rare_turtle)$Age =="sub-adult",
+                         cyano_v6_rare_turtle)
+
+# Work out which ASVs are present (>0 abundance) 
+subadults_keep<-apply(otu_table(subadults),1,function(x){sum(x)>0})
+
+# Subset to Only Those ASVS  
+subadults_sub<-prune_taxa(subadults_keep,subadults)
+
+# Strip Out the Row names of the Subsetted Object  
+subadults_asvs<-rownames(otu_table(subadults_sub))
+head(subadults_asvs)
+
+# adults
+adults<-prune_samples(sample_data(cyano_v6_rare_turtle)$Age =="adult",
+                         cyano_v6_rare_turtle)
+
+# Work out which ASVs are present (>0 abundance) 
+adults_keep<-apply(otu_table(adults),1,function(x){sum(x)>0})
+
+# Subset to Only Those ASVS  
+adults_sub<-prune_taxa(adults_keep,adults)
+
+# Strip Out the Row names of the Subsetted Object  
+adults_asvs<-rownames(otu_table(adults_sub))
+head(adults_asvs)
+
+# Make a List for the Venn Diagram 
+age_list<-list(adults=adults_asvs,juveniles=juveniles_asvs,"sub-adults"=subadults_asvs)
+
+# Make Venn diagram using "ggvenn" package
+venn_plot <- ggvenn(age_list)+
+  scale_fill_brewer(palette = "Set2")
+venn_plot
+
+ggsave(filename = "figures/venn.pdf", width = 6.75, height = 8, device = cairo_pdf)
+ggsave(filename = "figures/venn.jpg", width = 6.75, height = 8, dpi = 300)
