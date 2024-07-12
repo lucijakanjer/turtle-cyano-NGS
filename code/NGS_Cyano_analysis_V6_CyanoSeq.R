@@ -57,27 +57,37 @@ alpha_v6_observed_age <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
 alpha_v6_observed_age
 
-# Observed features plot - COAST
-alpha_v6_observed_coast <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Observed")) + 
-  geom_point(aes(colour = coast, shape = coast), size = 3) + 
+# Shannon diversity plot - Age
+alpha_v6_shannon_age <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Shannon")) + 
+  geom_point(aes(colour = Age, shape = Age), size = 3) + 
   geom_smooth(method =lm, color = "grey30") +
-  scale_color_brewer(palette = "Set2", name ="coast") +
+  scale_shape_discrete(name  ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
+  scale_color_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
+  theme_bw() + 
+  labs(x = "CCL (cm)",y = "Shannon diversity index",color = "Age", shape = "Age", tag = "B") +
+  annotate("text", x = 55, y = 0.25, label = "R = 0.699, p = 0.0009")+
+  theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
+alpha_v6_shannon_age
+
+# Observed features plot - COAST
+# boxplots
+alpha_v6_observed_coast <- ggplot(alpha_diversity_v6, aes(x = coast, y = Observed)) + 
+  geom_boxplot(aes(fill = coast)) +
+  geom_jitter(width = 0.2, size = 3, aes(fill = coast)) +
+  scale_fill_brewer(palette = "Set1", name = "Coast") +
   theme_bw() + 
   theme(legend.position = "none") +
-  labs(x = "CCL (cm)",y = "Observed ASV richness", tag = "A") + 
-  annotate("text", x = 55, y = 10, label = "R = 0.449, p = 0.0534")+
-  theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
+  labs(x ="", y = "Observed ASV richness", tag = "A") +
+  theme(axis.text = element_text(size = 12), axis.title = element_text(size = 12))
 alpha_v6_observed_coast
 
-# Shannon diversity plot
-alpha_v6_shannon_coast <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Shannon")) + 
-  geom_point(aes(colour = coast, shape = coast), size = 3) + 
-  geom_smooth(method =lm, color = "grey30") +
-  scale_shape_discrete(name  ="Adriatic coast", breaks = c("north", "south")) +
-  scale_color_brewer(palette = "Set2", name ="Adriatic coast", breaks = c("north", "south")) +
+# Shannon diversity plot - COAST
+alpha_v6_shannon_coast <- ggplot(alpha_diversity_v6, aes(x = coast, y = Shannon)) +
+  geom_boxplot(aes(fill = coast)) +
+  geom_jitter(width = 0.2, size = 3, aes(fill = coast)) +
+  scale_fill_brewer(palette = "Set1", name ="Adriatic coast", breaks = c("north", "south")) +
   theme_bw() + 
-  labs(x = "CCL (cm)",y = "Shannon diversity index",color = "coast", shape = "coast", tag = "B") +
-  annotate("text", x = 55, y = 0.25, label = "R = 0.699, p = 0.0009")+
+  labs(x ="",y = "Shannon diversity index",color = "coast", shape = "coast", tag = "B") +
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
 alpha_v6_shannon_coast
 
@@ -197,9 +207,9 @@ pca_v6_turtle_coast<-ggplot(cyano_v6_pc_scores_sub_turtle,aes(x=PC1,y=PC2)) +
   geom_point(aes(colour = coast, shape = coast), size = 2) +
   scale_shape_discrete(name  ="Adriatic Coast", 
                        breaks = c("north", "south")) +
-  scale_color_brewer(palette = "Set2", name ="Adriatic Coast", 
+  scale_color_brewer(palette = "Set1", name ="Adriatic Coast", 
                      breaks = c("north", "south")) +
-  scale_fill_brewer(palette = "Set2", name ="Adriatic Coast", 
+  scale_fill_brewer(palette = "Set1", name ="Adriatic Coast", 
                     breaks = c("north", "south")) +
   theme_bw() + 
   labs(x="PC1 (17.25%)",y="PC2 (10.52%)", tag = "C")
