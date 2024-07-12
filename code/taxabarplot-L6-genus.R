@@ -187,49 +187,63 @@ genus_wide <- genus_wide %>%
   mutate(total_abundance = sum(c_across(all_of(cyano_cols))))
 
 # Calculate the ratio of each species' abundance for each sample
-data_ratio <- genus_wide %>%
+genus_data_ratio <- genus_wide %>%
   mutate(across(all_of(cyano_cols), ~ . / total_abundance))
 
 # Drop the total_abundance column
-data_ratio <- data_ratio %>% select(-total_abundance)
+genus_data_ratio <- genus_data_ratio %>% select(-total_abundance)
 
 # Convert the rowwise data frame back to a regular data frame for summarization
-data_ratio <- ungroup(data_ratio)
+genus_data_ratio <- ungroup(genus_data_ratio)
 
-# Calculate the median ratio for each species across all samples
-median_ratios <- data_ratio %>%
-  summarise(across(all_of(cyano_cols), median, na.rm = TRUE))
+# Calculate the median, maximum, and minimum ratios for each genus
+genus_statistics <- genus_data_ratio %>%
+  summarise(across(all_of(cyano_cols), list(
+    median = ~ median(.x, na.rm = TRUE),
+    max = ~ max(.x, na.rm = TRUE),
+    min = ~ min(.x, na.rm = TRUE)
+  ), .names = "{col}__{fn}"))
 
-# Organize orders into single column
-median_ratios_long <- median_ratios %>%
+# Pivot the data to a long format
+genus_statistics_long <- genus_statistics %>%
   pivot_longer(
     cols = everything(),
-    names_to = "order",
-    values_to = "median ratio")
+    names_to = c("genus", ".value"),
+    names_sep = "__"
+  )
 
-# Visualize the result
-view(median_ratios_long)
+view(genus_statistics_long)
 
-# Calculate the total abundance for each genus across all samples
+# Calculate the total abundance for each order across all samples
 total_abundance_genus <- colSums(genus_wide[ , cyano_cols])
 
-# Calculate the total abundance of all genera across all samples
-total_abundance_all <- sum(total_abundance_genus)
+# Calculate the total abundance of all orders across all samples
+total_abundance_genus_all <- sum(total_abundance_genus)
 
 # Calculate the ratio for each genus
-genus_ratio <- total_abundance_genus / total_abundance_all
+genus_ratio <- total_abundance_genus / total_abundance_genus_all
 
 # Convert the genus ratios to a data frame
 genus_ratio_df <- data.frame(
-  Ratio = genus_ratio)
+  sum = genus_ratio)
 
-# Arrange the data frame from highest to lowest ratio
+# Ensure genus names are consistent
 genus_ratio_df <- genus_ratio_df %>%
-  arrange(desc(Ratio))
+  mutate(genus = rownames(genus_ratio_df))
 
-# View the sorted genera ratios
-print(genus_ratio_df)
+# Reset rownames
+rownames(genus_ratio_df) <- NULL
 
-# View the genera ratios
-view(genus_ratio_df)
+# Combine the data frames using left_join
+genus_combined_df <- genus_statistics_long %>%
+  left_join(genus_ratio_df, by = c("genus" = "genus"))
 
+# Arrange the combined data frame by descending values of "sum"
+genus_combined_df <- genus_combined_df %>%
+  arrange(desc(sum))
+
+# View the combined data frame
+view(genus_combined_df)
+
+# Export the combined data frame to a CSV file
+write.csv(genus_combined_df, "genus_combined_data.csv", row.names = FALSE)

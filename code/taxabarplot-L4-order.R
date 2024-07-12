@@ -155,48 +155,63 @@ order_wide <- order_wide %>%
   mutate(total_abundance = sum(c_across(all_of(cyano_cols))))
 
 # Calculate the ratio of each species' abundance for each sample
-data_ratio <- order_wide %>%
+order_data_ratio <- order_wide %>%
   mutate(across(all_of(cyano_cols), ~ . / total_abundance))
 
 # Drop the total_abundance column
-data_ratio <- data_ratio %>% select(-total_abundance)
+order_data_ratio <- order_data_ratio %>% select(-total_abundance)
 
 # Convert the rowwise data frame back to a regular data frame for summarization
-data_ratio <- ungroup(data_ratio)
+order_data_ratio <- ungroup(order_data_ratio)
 
-# Calculate the median ratio for each species across all samples
-median_ratios <- data_ratio %>%
-  summarise(across(all_of(cyano_cols), median, na.rm = TRUE))
+# Calculate the median, maximum, and minimum ratios for each species
+order_statistics <- order_data_ratio %>%
+  summarise(across(all_of(cyano_cols), list(
+    median = ~ median(.x, na.rm = TRUE),
+    max = ~ max(.x, na.rm = TRUE),
+    min = ~ min(.x, na.rm = TRUE)
+  ), .names = "{col}__{fn}"))
 
-# Organize orders into single column
-median_ratios_long <- median_ratios %>%
+# Pivot the data to a long format
+order_statistics_long <- order_statistics %>%
   pivot_longer(
     cols = everything(),
-    names_to = "order",
-    values_to = "median ratio")
+    names_to = c("order", ".value"),
+    names_sep = "__"
+  )
 
-# Visualize the result
-view(median_ratios_long)
+view(order_statistics_long)
 
 # Calculate the total abundance for each order across all samples
 total_abundance_order <- colSums(order_wide[ , cyano_cols])
 
 # Calculate the total abundance of all orders across all samples
-total_abundance_all <- sum(total_abundance_order)
+total_abundance_order_all <- sum(total_abundance_order)
 
 # Calculate the ratio for each order
-order_ratio <- total_abundance_order / total_abundance_all
+order_ratio <- total_abundance_order / total_abundance_order_all
 
 # Convert the order ratios to a data frame
 order_ratio_df <- data.frame(
-  Ratio = order_ratio)
+  sum = order_ratio)
 
-# Arrange the data frame from highest to lowest ratio
+# Ensure order names are consistent
 order_ratio_df <- order_ratio_df %>%
-  arrange(desc(Ratio))
+  mutate(Order = rownames(order_ratio_df))
 
-# View the sorted order ratios
-print(order_ratio_df)
+# Reset rownames
+rownames(order_ratio_df) <- NULL
 
-# View the order ratios
-view(order_ratio_df)
+# Combine the data frames using left_join
+order_combined_df <- order_statistics_long %>%
+  left_join(order_ratio_df, by = c("order" = "Order"))
+
+# Arrange the combined data frame by descending values of "sum"
+order_combined_df <- order_combined_df %>%
+  arrange(desc(sum))
+
+# View the combined data frame
+view(order_combined_df)
+
+# Export the combined data frame to a CSV file
+write.csv(order_combined_df, "order_combined_data.csv", row.names = FALSE)
