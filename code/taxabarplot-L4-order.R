@@ -89,6 +89,8 @@ ggsave(filename = "figures/taxa_bar_plot_order_all.pdf",
        width = 6.75, height = 6, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_order_all.jpg", 
        width = 6.75, height = 6, dpi = 300)
+ggsave(filename = "figures/taxa_bar_order_all.tiff", 
+       width = 6.75, height = 6, dpi = 300)
 
 ### Filtering and plotting only top 10 orders
 # Defining metadata columns
@@ -142,6 +144,8 @@ plot_order_top12
 ggsave(filename = "figures/taxa_bar_plot_order_top12.pdf", 
        width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_order_top12.jpg", 
+       width = 6.75, height = 4, dpi = 300)
+ggsave(filename = "figures/taxa_bar_order_top12.tiff", 
        width = 6.75, height = 4, dpi = 300)
 
 ### Order ratios across dataset

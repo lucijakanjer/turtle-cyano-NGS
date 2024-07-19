@@ -95,10 +95,13 @@ alpha_v6_shannon_coast
 alpha_v6_observed_age + alpha_v6_shannon_age
 ggsave(filename = "figures/alpha_v6_obsv_shannon_age.pdf", width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/alpha_v6_obsv_shannon_age.jpg", width = 6.75, height = 4, dpi = 300)
+ggsave(filename = "figures/alpha_v6_obsv_shannon_age.tiff", width = 6.75, height = 4, dpi = 300)
+ggsave(filename = "figures/alpha_v6_obsv_shannon_age.eps", width = 6.75, height = 4, dpi = 300)
 
 alpha_v6_observed_coast + alpha_v6_shannon_coast
 ggsave(filename = "figures/alpha_v6_obsv_shannon_coast.pdf", width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/alpha_v6_obsv_shannon_coast.jpg", width = 6.75, height = 4, dpi = 300)
+ggsave(filename = "figures/alpha_v6_obsv_shannon_coast.tiff", width = 6.75, height = 4, dpi = 300)
 
 ### Beta diversity PCA plot - For all samples
 
@@ -152,6 +155,7 @@ pca_v6
 
 ggsave(filename = "figures/pca_v6.pdf", width = 6.75, height = 8, device = cairo_pdf)
 ggsave(filename = "figures/pca_v6.jpg", width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/pca_v6.tiff", width = 6.75, height = 8, dpi = 300)
 
 ### Beta diversity PCA plot - For turtle samples
 
@@ -201,6 +205,10 @@ pca_v6_turtle<-ggplot(cyano_v6_pc_scores_sub_turtle,aes(x=PC1,y=PC2)) +
   labs(x="PC1 (17.25%)",y="PC2 (10.52%)", tag = "C")
 pca_v6_turtle
 
+ggsave(filename = "figures/pca_v6_turtle.pdf", width = 6.75, height = 8, device = cairo_pdf)
+ggsave(filename = "figures/pca_v6_turtle.jpg", width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/pca_v6_turtle.tiff", width = 6.75, height = 8, dpi = 300)
+
 # Plot CLR PCA for turtle samples - COAST  
 pca_v6_turtle_coast<-ggplot(cyano_v6_pc_scores_sub_turtle,aes(x=PC1,y=PC2)) + 
   stat_ellipse(geom="polygon",type="t",aes(color=coast, fill=coast),level=0.95,alpha=0.2) + 
@@ -215,17 +223,20 @@ pca_v6_turtle_coast<-ggplot(cyano_v6_pc_scores_sub_turtle,aes(x=PC1,y=PC2)) +
   labs(x="PC1 (17.25%)",y="PC2 (10.52%)", tag = "C")
 pca_v6_turtle_coast
 
-ggsave(filename = "figures/pca_v6_turtle.pdf", width = 6.75, height = 8, device = cairo_pdf)
-ggsave(filename = "figures/pca_v6_turtle.jpg", width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/pca_v6_turtle_coast.pdf", width = 6.75, height = 8, device = cairo_pdf)
+ggsave(filename = "figures/pca_v6_turtle_coast.jpg", width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/pca_v6_turtle_coast.tiff", width = 6.75, height = 8, dpi = 300)
 
 # Combined alpha and beta diversity plot
 (alpha_v6_observed_age + alpha_v6_shannon_age) / pca_v6_turtle 
 ggsave(filename = "figures/alpha_pca_v6.pdf", width = 6.75, height = 8, device = cairo_pdf)
 ggsave(filename = "figures/alpha_pca_v6.jpg", width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/alpha_pca_v6.tiff", width = 6.75, height = 8, dpi = 300)
 
 (alpha_v6_observed_coast + alpha_v6_shannon_coast) / pca_v6_turtle_coast 
 ggsave(filename = "figures/alpha_pca_v6_coast.pdf", width = 6.75, height = 8, device = cairo_pdf)
 ggsave(filename = "figures/alpha_pca_v6_coast.jpg", width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/alpha_pca_v6_coast.tiff", width = 6.75, height = 8, dpi = 300)
 
 ### Venn diagram
 # Subset Based On age
@@ -281,3 +292,4 @@ venn_plot
 
 ggsave(filename = "figures/venn.pdf", width = 6.75, height = 8, device = cairo_pdf)
 ggsave(filename = "figures/venn.jpg", width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/venn.tiff", width = 6.75, height = 8, dpi = 300)

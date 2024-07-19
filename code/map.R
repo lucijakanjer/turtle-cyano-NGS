@@ -10,7 +10,7 @@ library(dplyr)
 
 
 # Read the metadata.tsv file
-metadata <- read.delim("metadata-V6-v2.tsv")
+metadata <- read.delim("data/metadata-V6-v4.tsv")
 
 # Subset only samples where SampleType is "carapace"
 carapace_samples <- metadata %>%

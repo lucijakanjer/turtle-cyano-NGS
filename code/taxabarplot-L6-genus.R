@@ -112,6 +112,8 @@ ggsave(filename = "figures/taxa_bar_plot_genus_all.pdf",
        width = 15, height = 5, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_genus_all.jpg", 
        width = 15, height = 5, dpi = 300)
+ggsave(filename = "figures/taxa_bar_genus_all.tiff", 
+       width = 15, height = 5, dpi = 300)
 
 ### Filtering and plotting only top 10 orders
 # Defining metadata columns
@@ -166,6 +168,8 @@ ggsave(filename = "figures/taxa_bar_plot_family_top12.pdf",
        width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_genus_top12.jpg", 
        width = 6.75, height = 4, dpi = 300)
+ggsave(filename = "figures/taxa_bar_genus_top12.tiff", 
+       width = 6.75, height = 4, dpi = 300)
 
 # To make combination plot, first run "taxabarplot-L4-order.R" script 
 # object "plot_order_top12" must stay in the environment
@@ -174,6 +178,8 @@ plot_order_top12 / plot_genus_top12
 ggsave(filename = "figures/taxa_bar_plot_comb.pdf", 
        width = 6.75, height = 8, device = cairo_pdf)
 ggsave(filename = "figures/taxa_bar_plot_comb.jpg", 
+       width = 6.75, height = 8, dpi = 300)
+ggsave(filename = "figures/taxa_bar_plot_comb.tiff", 
        width = 6.75, height = 8, dpi = 300)
 
 ### Genera ratios across dataset
