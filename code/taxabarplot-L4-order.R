@@ -2,6 +2,7 @@
 library(tidyverse)
 library(RColorBrewer)
 library(patchwork)
+library(ggpattern)
 
 safe_colorblind_palette <- c("#88CCEE","#CC6677","#DDCC77","#332288","#117733",
                              "#AA4499","#44AA99","#999933","#882255","#E69F00",
@@ -92,7 +93,7 @@ ggsave(filename = "figures/taxa_bar_order_all.jpg",
 ggsave(filename = "figures/taxa_bar_order_all.tiff", 
        width = 6.75, height = 6, dpi = 300)
 
-### Filtering and plotting only top 10 orders
+### Filtering and plotting only top 12 orders
 # Defining metadata columns
 metadata <- order_long %>% select(sample(1:15)) %>% distinct()
 
@@ -148,6 +149,85 @@ ggsave(filename = "figures/taxa_bar_order_top12.jpg",
 ggsave(filename = "figures/taxa_bar_order_top12.tiff", 
        width = 6.75, height = 4, dpi = 300)
 
+### Filtering and plotting only top 5 orders
+# Defining metadata columns
+metadata <- order_long %>% select(sample(1:15)) %>% distinct()
+
+# Calculate total counts of each organism across the entire dataset
+total_counts <- order_long %>%
+  group_by(order) %>%
+  summarise(total_count = sum(count), .groups = 'drop') %>%
+  arrange(desc(total_count))
+
+# Identify the top 6 organisms
+top_6_order <- total_counts %>%
+  slice_head(n = 6) %>%
+  pull(order)
+
+# View the top 6 organisms
+print(top_6_order)
+
+# Label the top 6 organisms and aggregate the rest as "other"
+order_top_6_labeled <- order_long %>%
+  mutate(order = if_else(order %in% top_6_order, order, "other")) %>%
+  group_by(index, order) %>%
+  summarise(count = sum(count), .groups = 'drop')
+
+# Ensure the organism column is a factor with correct levels
+order_top_6_labeled <- order_top_6_labeled %>%
+  mutate(order = factor(order, levels = c(top_6_order, "other")))
+
+# Merge Back with Metadata
+order_top_6_labeled <- order_top_6_labeled %>%
+  left_join(metadata, by = "index")
+
+# Making stacked bar plot - top 12 orders
+plot_order_top5 <- ggplot(order_top_6_labeled, 
+                           aes(x = index, y = count, fill = order)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(x = "Samples", y = "Relative abundance", tag = "") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  #guides(fill = "none") +
+  #scale_fill_brewer(palette = "Set3")+
+  scale_fill_manual(values = safe_colorblind_palette)+
+  facet_grid(.~ factor(Age, 
+                       levels=c("juvenile", "sub-adult", "adult", "P", "R")),
+             scales = "free_x", space="free")+
+  coord_cartesian(ylim = c(0, NA), expand = FALSE)
+plot_order_top5
+
+# Saving last generated plot
+ggsave(filename = "figures/taxa_bar_plot_order_top5.pdf", 
+       width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_order_top5.jpg", 
+       width = 6.75, height = 4, dpi = 300)
+ggsave(filename = "figures/taxa_bar_order_top5.tiff", 
+       width = 6.75, height = 4, dpi = 300)
+
+
+# Making stacked bar plot - top 5 orders with viridis colors
+plot_order_top6_viridis <- ggplot(order_top_6_labeled, 
+                               aes(x = index, y = count, fill = order)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(x = "Samples", y = "Relative abundance", tag = "A") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  scale_fill_viridis_d(option = "D", , direction = -1) +
+  facet_grid(.~ factor(Age, 
+                       levels=c("juvenile", "sub-adult", "adult", "P", "R")),
+             scales = "free_x", space="free") +
+  coord_cartesian(ylim = c(0, NA), expand = FALSE)
+plot_order_top6_viridis
+
+ggsave(filename = "figures/taxa_bar_plot_order_top5_viridis.pdf", 
+       width = 6.75, height = 4, device = cairo_pdf)
+ggsave(filename = "figures/taxa_bar_order_top5_viridis.jpg", 
+       width = 6.75, height = 4, dpi = 300)
+ggsave(filename = "figures/taxa_bar_order_top5_viridis.tiff", 
+       width = 6.75, height = 4, dpi = 300)
+
+
 ### Order ratios across dataset
 
 # Ensure the first column is treated as row names (if needed)
@@ -164,6 +244,7 @@ order_data_ratio <- order_wide %>%
 
 # Drop the total_abundance column
 order_data_ratio <- order_data_ratio %>% select(-total_abundance)
+write.csv(order_data_ratio, file = "order_data_ratio.csv", row.names = FALSE)
 
 # Convert the rowwise data frame back to a regular data frame for summarization
 order_data_ratio <- ungroup(order_data_ratio)

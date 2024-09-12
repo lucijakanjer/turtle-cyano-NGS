@@ -115,7 +115,7 @@ ggsave(filename = "figures/taxa_bar_genus_all.jpg",
 ggsave(filename = "figures/taxa_bar_genus_all.tiff", 
        width = 15, height = 5, dpi = 300)
 
-### Filtering and plotting only top 10 orders
+### Filtering and plotting only top 12 genera
 # Defining metadata columns
 metadata <- genus_long %>% select(sample(1:15)) %>% distinct()
 
@@ -125,15 +125,15 @@ total_counts <- genus_long %>%
   summarise(total_count = sum(count), .groups = 'drop') %>%
   arrange(desc(total_count))
 
-# Identify the top 12 organisms
+# Identify the top 12 genera
 top_12_genus <- total_counts %>%
   slice_head(n = 12) %>%
   pull(genus)
 
-# View the top 10 families
+# View the top 12 genera
 print(top_12_genus)
 
-# Label the top 10 families and aggregate the rest as "other"
+# Label the top 12 genera and aggregate the rest as "other"
 genus_labeled <- genus_long %>%
   mutate(genus = if_else(genus %in% top_12_genus, genus, "other")) %>%
   group_by(index, genus) %>%
@@ -146,6 +146,14 @@ genus_labeled <- genus_labeled %>%
 # Merge Back with Metadata
 genus_labeled <- genus_labeled %>%
   left_join(metadata, by = "index")
+
+# Converting to wide format for export
+genus_labeled_wide <- genus_labeled %>%
+  pivot_wider(names_from = genus, values_from = count)
+
+# Exporting table
+write.csv(genus_labeled_wide, file = "genus_labeled_wide.csv",
+          row.names = FALSE)
 
 # Making stacked bar plot - top 12 genera
 plot_genus_top12 <- ggplot(genus_labeled, 
@@ -201,6 +209,7 @@ genus_data_ratio <- genus_data_ratio %>% select(-total_abundance)
 
 # Convert the rowwise data frame back to a regular data frame for summarization
 genus_data_ratio <- ungroup(genus_data_ratio)
+write.csv(genus_data_ratio, file = "genus_data_ratio.csv", row.names = FALSE)
 
 # Calculate the median, maximum, and minimum ratios for each genus
 genus_statistics <- genus_data_ratio %>%
@@ -220,10 +229,10 @@ genus_statistics_long <- genus_statistics %>%
 
 view(genus_statistics_long)
 
-# Calculate the total abundance for each order across all samples
+# Calculate the total abundance for each genus across all samples
 total_abundance_genus <- colSums(genus_wide[ , cyano_cols])
 
-# Calculate the total abundance of all orders across all samples
+# Calculate the total abundance of all genera across all samples
 total_abundance_genus_all <- sum(total_abundance_genus)
 
 # Calculate the ratio for each genus

@@ -45,27 +45,34 @@ alpha_diversity_v6 <-left_join(alpha_diversity_v6,cyano_v6_rare_turtle_meta, by=
 with(alpha_diversity_v6,cor.test(CCL,Shannon))
 with(alpha_diversity_v6,cor.test(CCL,Observed))
 
+# critical value for alpha = 0.05, two-tailed test, and 17 degrees of freedom
+qt(p = 0.975, df = 17)
+
 # Observed features plot - Age
-alpha_v6_observed_age <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Observed")) + 
+alpha_v6_observed_age <- plot_richness(cyano_v6_rare_turtle, 
+                                       x = "CCL", measures = c("Observed")) + 
   geom_point(aes(colour = Age, shape = Age), size = 3) + 
   geom_smooth(method =lm, color = "grey30") +
   scale_color_brewer(palette = "Set2", name ="Age") +
   theme_bw() + 
   theme(legend.position = "none") +
   labs(x = "CCL (cm)",y = "Observed ASV richness", tag = "A") + 
-  annotate("text", x = 55, y = 10, label = "R = 0.449, p = 0.0534")+
+  annotate("text", x = 55, y = 10, 
+           label = expression(italic(R) ~ "= 0.449," ~ italic(p) ~ "= 0.0534")) +
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
 alpha_v6_observed_age
 
 # Shannon diversity plot - Age
-alpha_v6_shannon_age <- plot_richness(cyano_v6_rare_turtle, x = "CCL", measures = c("Shannon")) + 
+alpha_v6_shannon_age <- plot_richness(cyano_v6_rare_turtle, 
+                                      x = "CCL", measures = c("Shannon")) + 
   geom_point(aes(colour = Age, shape = Age), size = 3) + 
   geom_smooth(method =lm, color = "grey30") +
   scale_shape_discrete(name  ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
   scale_color_brewer(palette = "Set2", name ="Turtle Age", breaks = c("juvenile", "sub-adult", "adult")) +
   theme_bw() + 
   labs(x = "CCL (cm)",y = "Shannon diversity index",color = "Age", shape = "Age", tag = "B") +
-  annotate("text", x = 55, y = 0.25, label = "R = 0.699, p = 0.0009")+
+  annotate("text", x = 55, y = 0.25, 
+           label = expression(italic(R) ~ "= 0.699," ~ italic(p) ~ "= 0.0009"))+
   theme(axis.text=element_text(size=12), axis.title = element_text(size=12))
 alpha_v6_shannon_age
 

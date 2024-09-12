@@ -1,0 +1,30 @@
+"index","RecoveryCentre","lat","Condition","CCL","Age","AnimalName","AdmissionDate","State","SampleType","SamplingDate","AgeOld","CCW","lon","TurtleID","Cymatolege","Leptothoe","Myxosarcina","Odorella","Picosynechococcus","Prochlorotrichaceae_X","Rhodoploca","Salileptolyngbya","other","unclassified_Cyanobacteriota","unclassified_Cyanophyceae","unclassified_Nodosilineaceae","unclassified_Pleurocapsaceae"
+"TB159","Aquarium Pula",44.11306,"injured",62,"sub-adult","Ella Ravka","30.6.2020","WILD","carapace","30.6.2020","sub-adult",58,15.23235,"ID093",2311,734,153,529,36,40,5116,1905,3124,1230,1877,2651,105
+"TB163","Aquarium Pula",42.77756,"plastic",68,"sub-adult","Huanita","13.3.2020","DURING","carapace","20.3.2020","sub-adult",66,16.90186,"ID094",0,423,0,0,0,0,472,2052,44,314,216,1752,0
+"TB167","Aquarium Pula",42.95932,"injured",67,"sub-adult","Maro","25.6.2020","DURING","carapace","21.7.2020","sub-adult",63.2,17.14156,"ID096",0,0,7,84,0,0,0,0,0,0,3,0,13
+"TB175","Aquarium Pula",44.75832,"floating",45.2,"juvenile","Maksimus","26.7.2020","DURING","carapace","28.7.2020","sub-adult",44.2,13.89056,"ID098",3660,7496,1412,0,0,56421,25735,8,3203,27354,2174,746,0
+"TB177","Aquarium Pula",44.98378,"floating",68,"sub-adult","Spela","30.7.2020","DURING","carapace","3.8.2020","adult",67,13.75431,"ID099",1924,40076,116,18680,203,580,30023,26020,13250,6447,9722,20990,13376
+"TB181","Blue World Institute",42.90401,"good",42,"juvenile","CC_VIS_2001","","WILD","carapace","29.6.2020","sub-adult",37,16.03579,"ID100",4369,694,40,0,100,65986,48846,877,1674,23474,19261,20184,21
+"TB183","Blue World Institute",42.9546,"good",31,"juvenile","CC_VIS_2002","","WILD","carapace","11.8.2020","juvenile",29,15.85258,"ID101",253,1167,24,0,0,57702,98308,2006,1040,5115,17778,11082,0
+"TB185","Blue World Institute",42.9536,"good",31,"juvenile","CC_VIS_2003","","WILD","carapace","20.8.2020","juvenile",28,16.09005,"ID102",2066,169,367,0,0,46498,60910,390,2726,23589,10947,14847,0
+"TB189","Blue World Institute",45.02314,"injured",30,"juvenile","Valbiska","9.10.2020","DURING","carapace","5.11.2020","juvenile",27.5,14.57858,"ID104",123,1141,14,0,91,9,10181,579,1943,21,1590,855,30
+"TB191","Blue World Institute",44.50634,"good",67.5,"sub-adult","FS94","28.11.2020","WILD","carapace","30.11.2020","adult",66,14.28518,"ID105",136,325,11,84,24,1622,3924,2010,7315,396,648,2382,0
+"TB195","Blue World Institute",44.50634,"good",45,"juvenile","FS35","28.11.2020","DURING","carapace","10.12.2020","sub-adult",41,14.28518,"ID107",118,261,54,0,2132,8441,13569,0,1180,602,630,17,17
+"TB197","Blue World Institute",44.50634,"good",70,"adult","FS25","18.12.2020","WILD","carapace","19.12.2020","adult",67,14.28518,"ID108",372,137,54,17,646,1411,6834,1331,3333,743,641,4730,79
+"TB199","Blue World Institute",44.50634,"good",73,"adult","FS60","18.12.2020","WILD","carapace","19.12.2020","adult",68,14.28518,"ID109",30,7,0,26,23,1711,5022,677,244,235,73,2050,0
+"TB201","Blue World Institute",44.54678,"injured",36,"juvenile","APOX","12.1.2021","DURING","carapace","14.1.2021","juvenile",34,14.44744,"ID110",87717,32081,2732,7,5,731,88653,18063,5548,51893,9278,116192,98
+"TB203","Blue World Institute",44.57298,"injured",55,"juvenile","CC_LOSINJ_2102","23.1.2021","DURING","carapace","25.1.2021","sub-adult",53.5,14.40861,"ID111",409,383,19,107,54,8244,14086,474,466,2563,648,4523,0
+"TB205","Blue World Institute",44.54294,"stranded",35.5,"juvenile","ZLATA","30.1.2021","DURING","carapace","3.2.2021","juvenile",33,14.4418,"ID112",41,1247,270,0,0,879,3564,1439,317,978,367,8151,10
+"TB207","Blue World Institute",44.52218,"injured",40.5,"juvenile","NOEMI","14.2.2021","DURING","carapace","16.2.2021","sub-adult",38,14.50811,"ID113",295,146,2034,0,0,352,268,604,1004,44,1222,1004,1627
+"TB213","Blue World Institute",NA,"weak",33,"juvenile","NATANAEL","9.3.2021","DURING","carapace","10.03.2021","juvenile",29,NA,"ID116",5,0,0,0,0,6,31,40,12,0,92,17,0
+"TB215","Aquarium Pula",43.88625,"floating",73,"adult","KARLO ALBANO","19.3.2021","BEFORE","carapace","25.3.2021","adult",73,15.19374,"ID117",1224,19857,102,4299,28201,1567,12217,4153,20663,4884,9144,2910,5896
+"TB217","Aquarium Pula",44.80744,"injured",26,"juvenile","OLIVER RAUL","20.4.2021","BEFORE","carapace","23.4.2021","juvenile",24.2,13.93734,"ID118",828,8785,195,0,8,599,130402,498,237,893,165,2606,0
+"TB217P","pool",NA,"pool",NA,"P","pool","pool","pool","pool","","pool",NA,NA,"pool",15,17,0,13,23,0,36,0,25,0,10,11,10
+"TB219","Aquarium Pula",44.53431,"injured",37.8,"juvenile","MARTIN","21.4.2021","BEFORE","carapace","23.4.2021","juvenile",34.8,14.47877,"ID119",13800,47013,6062,0,85,9325,46114,1273,6289,8779,7931,8939,84
+"TB219P","pool",NA,"pool",NA,"P","pool","pool","pool","pool","","pool",NA,NA,"pool",0,0,0,0,0,6,59,0,0,0,30,17,0
+"TB221","Blue World Institute",44.56873,"floating",31,"juvenile","CC_LOSINJ_2112","23.5.2021","DURING","carapace","25.5.2021","juvenile",28,14.42382,"ID120",69,361,23,0,0,376,6024,875,86,102,124,1627,0
+"TB223","Blue World Institute",42.991,"injured",70,"adult","BOVA","5.6.2021","DURING","carapace","8.6.2021","adult",64,16.051,"ID121",0,26,0,94,30,0,3759,83,74,6,33,349,1334
+"TB227","Blue World Institute",44.51976,"injured",52,"juvenile","CALIMERO","1.4.2021","DURING","carapace","6.4.2021","sub-adult",52,14.18147,"ID123",116,0,12,555,0,36,612,219,123,664,574,63,30
+"TB229","Blue World Institute",44.67156,"floating",26,"juvenile","MARIJANA","5.4.2021","DURING","carapace","6.4.2021","juvenile",23,14.58064,"ID124",704,1748,398,0,6,13808,35720,13,253,17225,270,108,0
+"TB231","Blue World Institute",44.54774,"floating",27,"juvenile","CC_LOSINJ_2111","20.4.2021","from deceased","carapace","21.4.2021","juvenile",25.5,14.43973,"ID125",1716,11747,16,0,10,11359,309892,18848,1447,12113,9384,732,4
+"VRS","rocks",NA,"rocks",NA,"R","rocks","rocks","rocks","rocks","","rocks",NA,NA,"rocks",589,3592,906,0,1209,324,197,34,18382,1870,8057,0,887

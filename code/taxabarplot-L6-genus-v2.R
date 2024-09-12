@@ -4,10 +4,6 @@ library(RColorBrewer)
 library(plotly)
 library(patchwork)
 
-safe_colorblind_palette <- c("#88CCEE","#CC6677","#DDCC77","#332288","#117733",
-                             "#AA4499","#44AA99","#999933","#882255","#E69F00",
-                             "#661100","#6699CC","#999999")
-
 # Importing dataset (exported from taxa barplot QIIME2 QZV artifact)
 genus_raw <- read.csv(file = "data/taxabarplots-cyano-V6-level-6-genus.csv", 
                       header = TRUE)
@@ -102,7 +98,7 @@ genus_long <- genus_long %>%
 
 plot_genus <- ggplot(genus_long, aes(x = index, y = count, fill = genus)) +
   geom_bar(stat = "identity",, position = "fill") +
-  labs(x = "Samples", y = "Relative abundance", tag = "") +
+  labs(x = "Samples", y = "Relative abundance", tag = "B") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   #guides(fill = "none") +

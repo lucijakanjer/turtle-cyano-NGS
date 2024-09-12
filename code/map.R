@@ -4,10 +4,10 @@ library(ggplot2)
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
+library(rnaturalearthhires)
 library(ggspatial)
 library(patchwork)
 library(dplyr)
-
 
 # Read the metadata.tsv file
 metadata <- read.delim("data/metadata-V6-v4.tsv")
@@ -84,5 +84,7 @@ map_europe + map_adriatic
 ggsave(filename = "figures/map_combined.pdf", 
        width = 6.75, height = 4, device = cairo_pdf)
 ggsave(filename = "figures/map_combined.jpg", 
+       width = 6.75, height = 4, dpi = 300)
+ggsave(filename = "figures/map_combined.tiff", 
        width = 6.75, height = 4, dpi = 300)
 
