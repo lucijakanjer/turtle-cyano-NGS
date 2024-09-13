@@ -86,12 +86,12 @@ plot_order <- ggplot(order_long, aes(x = index, y = count, fill = order)) +
 plot_order
 
 # Saving last generated plot
-ggsave(filename = "figures/taxa_bar_plot_order_all.pdf", 
-       width = 6.75, height = 6, device = cairo_pdf)
-ggsave(filename = "figures/taxa_bar_order_all.jpg", 
-       width = 6.75, height = 6, dpi = 300)
-ggsave(filename = "figures/taxa_bar_order_all.tiff", 
-       width = 6.75, height = 6, dpi = 300)
+#ggsave(filename = "figures/taxa_bar_plot_order_all.pdf", 
+#       width = 6.75, height = 6, device = cairo_pdf)
+#ggsave(filename = "figures/taxa_bar_order_all.jpg", 
+#       width = 6.75, height = 6, dpi = 300)
+#ggsave(filename = "figures/taxa_bar_order_all.tiff", 
+#       width = 6.75, height = 6, dpi = 300)
 
 ### Filtering and plotting only top 12 orders
 # Defining metadata columns
@@ -142,12 +142,12 @@ plot_order_top12 <- ggplot(order_labeled,
 plot_order_top12
 
 # Saving last generated plot
-ggsave(filename = "figures/taxa_bar_plot_order_top12.pdf", 
-       width = 6.75, height = 4, device = cairo_pdf)
-ggsave(filename = "figures/taxa_bar_order_top12.jpg", 
-       width = 6.75, height = 4, dpi = 300)
-ggsave(filename = "figures/taxa_bar_order_top12.tiff", 
-       width = 6.75, height = 4, dpi = 300)
+#ggsave(filename = "figures/taxa_bar_plot_order_top12.pdf", 
+#       width = 6.75, height = 4, device = cairo_pdf)
+#ggsave(filename = "figures/taxa_bar_order_top12.jpg", 
+#       width = 6.75, height = 4, dpi = 300)
+#ggsave(filename = "figures/taxa_bar_order_top12.tiff", 
+#       width = 6.75, height = 4, dpi = 300)
 
 ### Filtering and plotting only top 5 orders
 # Defining metadata columns
@@ -198,12 +198,12 @@ plot_order_top5 <- ggplot(order_top_6_labeled,
 plot_order_top5
 
 # Saving last generated plot
-ggsave(filename = "figures/taxa_bar_plot_order_top5.pdf", 
-       width = 6.75, height = 4, device = cairo_pdf)
-ggsave(filename = "figures/taxa_bar_order_top5.jpg", 
-       width = 6.75, height = 4, dpi = 300)
-ggsave(filename = "figures/taxa_bar_order_top5.tiff", 
-       width = 6.75, height = 4, dpi = 300)
+#ggsave(filename = "figures/taxa_bar_plot_order_top5.pdf", 
+#       width = 6.75, height = 4, device = cairo_pdf)
+#ggsave(filename = "figures/taxa_bar_order_top5.jpg", 
+#       width = 6.75, height = 4, dpi = 300)
+#ggsave(filename = "figures/taxa_bar_order_top5.tiff", 
+#       width = 6.75, height = 4, dpi = 300)
 
 
 # Making stacked bar plot - top 5 orders with viridis colors
@@ -220,11 +220,11 @@ plot_order_top6_viridis <- ggplot(order_top_6_labeled,
   coord_cartesian(ylim = c(0, NA), expand = FALSE)
 plot_order_top6_viridis
 
-ggsave(filename = "figures/taxa_bar_plot_order_top5_viridis.pdf", 
-       width = 6.75, height = 4, device = cairo_pdf)
-ggsave(filename = "figures/taxa_bar_order_top5_viridis.jpg", 
-       width = 6.75, height = 4, dpi = 300)
-ggsave(filename = "figures/taxa_bar_order_top5_viridis.tiff", 
+#ggsave(filename = "figures/taxa_bar_plot_order_top5_viridis.pdf", 
+#       width = 6.75, height = 4, device = cairo_pdf)
+#ggsave(filename = "figures/taxa_bar_order_top5_viridis.jpg", 
+#       width = 6.75, height = 4, dpi = 300)
+#ggsave(filename = "figures/taxa_bar_order_top5_viridis.tiff", 
        width = 6.75, height = 4, dpi = 300)
 
 

@@ -96,17 +96,29 @@ genus_long <- genus_long %>%
                                           "Salileptolyngbya", "Euryhalinema",
                                           "unclassified_Nodosilineales","other")))
 
+# Define custom labels for the genus levels
+genus_labels <- c(
+  expression(italic("Rhodoploca")),
+  expression(italic("Leptothoe")),
+  expression(italic("Cymatolege")),
+  expression(italic("Salileptolyngbya")),
+  expression(italic("Euryhalinema")),
+  "unclassified_Nodosilineales",
+  "other"
+)
+
 plot_genus <- ggplot(genus_long, aes(x = index, y = count, fill = genus)) +
-  geom_bar(stat = "identity",, position = "fill") +
+  geom_bar(stat = "identity", position = "fill") +
   labs(x = "Samples", y = "Relative abundance", tag = "B") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  #guides(fill = "none") +
-  scale_fill_viridis_d(option = "D", direction = -1) +
+  scale_fill_manual(values = viridis::viridis(7, option = "D", direction = -1),
+                    labels = genus_labels) +
   facet_grid(.~ factor(Age, 
                        levels=c("juvenile", "sub-adult", "adult", "P", "R")),
-             scales = "free_x", space="free")+
+             scales = "free_x", space="free") +
   coord_cartesian(ylim = c(0, NA), expand = FALSE)
+
 plot_genus
 
 # Saving last generated plot
